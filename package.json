@@ -1,0 +1,10 @@
+{
+  "name": "vue-graphql",
+  "version": "0.0.1",
+  "description": "POC vueJS with graphQL",
+  "main": "main.js",
+  "repository": "git@github.com:krbaio3/vue-graphql-poc.git",
+  "author": "J. KrBaIO3 <krbaio3@gmail.com>",
+  "license": "MIT",
+  "private": true
+}
