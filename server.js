@@ -2,15 +2,18 @@ const {
     ApolloServer
 } = require('apollo-server');
 const {connect, set} = require('mongoose');
-const Post = require('./models/Post');
-const User = require('./models/User');
 const {readFileSync} = require('fs')
 const {join} = require('path')
 
+// import typedefs and resolvers
 const filePath = join(__dirname, 'typeDefs.gql');
 const typeDefs = readFileSync(filePath, 'utf-8');
 const resolvers = require('./resolvers');
+// end import typedefs and resolvers
 
+// import Env Var and Mongoose Models
+const Post = require('./models/Post');
+const User = require('./models/User');
 switch (process.env.NODE_ENV) {
     case 'production':
         require('dotenv').config({
@@ -28,7 +31,9 @@ switch (process.env.NODE_ENV) {
         });
         break;
 };
-// Mongoose
+// end import Env Var and Mongoose Models
+
+// Mongoose MLab DB
 connect(process.env.MONGO_URI,
     {
         useNewUrlParser: true,
@@ -38,6 +43,7 @@ connect(process.env.MONGO_URI,
 set('useCreateIndex', true);
 // end Mongoose
 
+// create Apollo/GraphQL server
 const server = new ApolloServer({
     typeDefs,
     resolvers,
@@ -46,7 +52,9 @@ const server = new ApolloServer({
         Post
     }
 });
+// end create Apollo/GraphQL server
 
+// server
 server.listen(4000).then(({
     url
 }) => console.log(`🚀 Server listening in ${url} 🦄`));

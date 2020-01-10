@@ -9,7 +9,6 @@ module.exports = {
                     model: 'User',
                     path: 'createdBy',
                 });
-
             return post;
         }
     },
@@ -53,4 +52,4 @@ module.exports = {
             return newUser;
         }
     }
-}
+};
