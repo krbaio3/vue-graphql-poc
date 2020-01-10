@@ -17,17 +17,17 @@ const User = require('./models/User');
 switch (process.env.NODE_ENV) {
     case 'production':
         require('dotenv').config({
-            path: 'prod.env'
+            path: '.env.production'
         });
         break;
     case 'develop':
         require('dotenv').config({
-            path: 'dev.env'
+            path: '.env.dev'
         });
         break;
     default:
         require('dotenv').config({
-            path: 'local.env'
+            path: '.env.local'
         });
         break;
 };
