@@ -23,6 +23,7 @@
   ],
   "scripts": {
     "client": "yarn workspace @vue-graphql/client serve",
+    "client:lint": "yarn workspace @vue-graphql/client lint --fix",
     "server": "yarn workspace @vue-graphql/server server",
     "dev": "concurrently --kill-others-on-fail --names \"SERVER,CLIENT\" -c \"black.bgCyan.bold,yellow.bgRed.bold\" \"yarn server\"  \"yarn client\"",
     "test": "test"
