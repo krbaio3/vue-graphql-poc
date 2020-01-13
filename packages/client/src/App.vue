@@ -1,61 +1,89 @@
 <template>
   <v-app>
-    <v-app-bar
+    <!-- Side Navbar -->
+    <v-navigation-drawer
       app
+      temporary
+      fixed
+      v-model="sideNavbar"
+    >
+    </v-navigation-drawer>
+    <v-app-bar
+      fixed
       color="primary"
       dark
     >
-      <div class="d-flex align-center">
-        <v-img
-          alt="Vuetify Logo"
-          class="shrink mr-2"
-          contain
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-logo-dark.png"
-          transition="scale-transition"
-          width="40"
-        />
-
-        <v-img
-          alt="Vuetify Name"
-          class="shrink mt-1 hidden-sm-and-down"
-          contain
-          min-width="100"
-          src="https://cdn.vuetifyjs.com/images/logos/vuetify-name-dark.png"
-          width="100"
-        />
-      </div>
-
+      <!-- App Title -->
+      <v-app-bar-nav-icon @click="toogleSideNavbar"></v-app-bar-nav-icon>
+      <v-toolbar-title class="hidden-xs-only">
+        <router-link
+          to="/"
+          tag="span"
+          style="cursor: pointer"
+        >
+          VueShare
+        </router-link>
+      </v-toolbar-title>
       <v-spacer></v-spacer>
-
-      <v-btn
-        href="https://github.com/vuetifyjs/vuetify/releases/latest"
-        target="_blank"
-        text
-      >
-        <span class="mr-2">Latest Release</span>
-        <v-icon>mdi-open-in-new</v-icon>
-      </v-btn>
+      <!-- Search Input -->
+      <v-text-field
+        name="search"
+        label="label"
+        id="search"
+        placeholder="Search Post"
+        flex
+        prepend-icon="mdi-magnify"
+        color="accent"
+        single-line
+        hide-details
+      ></v-text-field>
+      <v-spacer></v-spacer>
+      <!-- Horizontal NavBar Links -->
+      <v-toolbar-items class="hidden-xs-only">
+        <v-btn
+          text
+          v-for="(item, index) in horizontalNavItems"
+          :key="index"
+          :to="item.link"
+        >
+          <v-icon
+            class="hidden-sm-only"
+            left
+          >{{ item.icon }}</v-icon>
+          {{ item.title }}
+        </v-btn>
+      </v-toolbar-items>
     </v-app-bar>
-
-    <v-content>
-      <HelloWorld/>
-    </v-content>
+    <main>
+      <v-container class="mt-4">
+        <router-view></router-view>
+      </v-container>
+    </main>
   </v-app>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import HelloWorld from './components/HelloWorld.vue';
+import { Component, Vue } from 'vue-property-decorator';
+import colors from 'vuetify/es5/util/colors';
+import HelloWorld from '@/components/HelloWorld.vue';
+@Component({
+    name: 'App',
+    components: {
+        HelloWorld,
+    },
+})
+export default class App extends Vue {
 
-export default Vue.extend({
-  name: 'App',
-
-  components: {
-    HelloWorld,
-  },
-
-  data: () => ({
-    //
-  }),
-});
+    public sideNavbar: boolean = false;
+    public toogleSideNavbar(): void {
+        this.sideNavbar = !this.sideNavbar;
+    }
+    public get horizontalNavItems() {
+        return [
+            { icon: 'mdi-chat', title: 'Post', link: '/post' },
+            { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
+            { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
+        ];
+    }
+}
 </script>
