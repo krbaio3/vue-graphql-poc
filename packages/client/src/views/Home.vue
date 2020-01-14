@@ -1,5 +1,5 @@
 <template>
-  <v-container>
+  <v-container class="mt-4">
     <h1>Home</h1>
   </v-container>
 </template>
