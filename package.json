@@ -35,5 +35,18 @@
   "engines": {
     "node": ">=8.10.0",
     "yarn": "1.x"
+  },
+  "gitHooks": {
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.ts": [
+      "yarn client:lint",
+      "git add"
+    ],
+    "*.vue": [
+      "yarn client:lint",
+      "git add"
+    ]
   }
 }

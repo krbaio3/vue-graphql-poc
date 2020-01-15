@@ -1,8 +1,15 @@
 <template>
-  <v-container grid-list-xs class="mt-5">
+  <v-container
+    grid-list-xs
+    class="mt-5"
+  >
     <h1>AddPost</h1>
     <div v-if="$apollo.loading">Loading...</div>
-    <ul v-for="(post) in getPosts" :key="post._id">
+    <ul
+      v-else
+      v-for="(post) in getPosts"
+      :key="post._id"
+    >
       <li>
         - {{post.title}}
         - {{post.imageUrl}}
@@ -21,14 +28,16 @@
     apollo: {
       getPosts: {
         query: gql `
-          {getPosts {
+          {
+            getPosts {
             _id
             title
             imageUrl
             description
-          }}`,
-      }
-    }
+          }
+        }`,
+      },
+    },
   })
   export default class AddPost extends Vue {
     private getPosts = {};

@@ -59,7 +59,9 @@
     </v-app-bar>
     <main>
       <v-container class="mt-5">
-        <router-view></router-view>
+        <transition name="fade">
+          <router-view></router-view>
+        </transition>
       </v-container>
     </main>
   </v-app>
@@ -86,22 +88,33 @@ export default class App extends Vue {
   }
   public get horizontalNavItems() {
     return [
-      { icon: 'mdi-chat', title: 'Post', link: '/post' },
+      { icon: 'mdi-chat', title: 'Post', link: '/posts' },
       { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
       { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
     ];
   }
   public get sideNavItems() {
     return [
-      { icon: 'mdi-chat', title: 'Post', link: '/post' },
+      { icon: 'mdi-chat', title: 'Post', link: '/posts' },
       { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
       { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
     ];
   }
 
-  public created() {
-    console.log('entra')
-    console.log(process.env)
-  }
 }
 </script>
+<style lang="scss" scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition-property: opacity;
+  transition-duration: 0.25s;
+}
+.fade-enter-active {
+  transition-delay: 0.25s;
+}
+.fade-enter,
+.fade-leave-active {
+  opacity: 0;
+  // transform: translateX(-25px);
+}
+</style>
