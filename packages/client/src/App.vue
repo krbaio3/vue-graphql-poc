@@ -98,5 +98,10 @@ export default class App extends Vue {
       { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
     ];
   }
+
+  public created() {
+    console.log('entra')
+    console.log(process.env)
+  }
 }
 </script>
