@@ -2,6 +2,10 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import AddPost from '@/components/Post/AddPost.vue';
+import Posts from '@/components/Post/Posts.vue';
+import Profile from '@/components/Auth/Profile.vue';
+import SignIn from '@/components/Auth/SignIn.vue';
+import SignUp from '@/components/Auth/SignUp.vue';
 
 Vue.use(VueRouter);
 
@@ -12,9 +16,29 @@ const routes = [
     component: Home,
   },
   {
-    path: '/post',
-    name: 'post',
+    path: '/posts',
+    name: 'posts',
+    component: Posts,
+  },
+  {
+    path: '/posts/add',
+    name: 'addPost',
     component: AddPost,
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: Profile,
+  },
+  {
+    path: '/signin',
+    name: 'signIn',
+    component: SignIn,
+  },
+  {
+    path: '/signup',
+    name: 'signUp',
+    component: SignUp,
   },
   {
     path: '/about',

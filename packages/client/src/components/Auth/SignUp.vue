@@ -1,20 +1,19 @@
 <template>
   <v-container grid-list-xs class="mt-5">
-    <h1>AddPost</h1>
+    <h1>SignUp</h1>
   </v-container>
 </template>
 
 <script lang="ts">
-  import {Vue, Component} from 'vue-property-decorator';
+  import {Component, Vue} from 'vue-property-decorator';
 
   @Component({
-    name: 'AddPost',
+    name: 'SignUp',
   })
-  export default class AddPost extends Vue {
+  export default class SignUp extends Vue {}
 
-  }
 </script>
 
 <style lang="scss" scoped>
 
-</style>
+</style>>
