@@ -3,7 +3,7 @@ import ApolloClient from 'apollo-boost';
 import VueApollo from 'vue-apollo';
 
 // setup ApolloClient
-const defaultClient = new ApolloClient({
+export const defaultClient = new ApolloClient({
   uri: process.env.VUE_APP_GRAPHQL_HTTP,
 });
 
