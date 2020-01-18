@@ -2,7 +2,7 @@ import Vue from 'vue';
 import Vuex, { StoreOptions } from 'vuex';
 import { RootState } from './types';
 import { postsModule } from './modules/posts';
-import { todoModule } from './modules/todo/index';
+// import { todoModule } from './modules/todo/index';
 
 Vue.use(Vuex);
 

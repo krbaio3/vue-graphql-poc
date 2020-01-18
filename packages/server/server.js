@@ -1,9 +1,12 @@
 const {
     ApolloServer
 } = require('apollo-server');
-const {connect, set} = require('mongoose');
+const {connect, set, connection} = require('mongoose');
 const {readFileSync} = require('fs')
 const {join} = require('path')
+
+const port = process.env.PORT || 4000;
+
 
 // import typedefs and resolvers
 const filePath = join(__dirname, 'typeDefs.gql');
@@ -22,12 +25,12 @@ switch (process.env.NODE_ENV) {
         break;
     case 'develop':
         require('dotenv').config({
-            path: '.env.dev'
+          path: '.env.development'
         });
         break;
     default:
         require('dotenv').config({
-            path: '.env.local'
+            path: '.env'
         });
         break;
 };
@@ -41,6 +44,11 @@ connect(process.env.MONGO_URI,
     }
 ).then(() => console.log('DB connected')).catch(err => console.error(err));
 set('useCreateIndex', true);
+
+// Added check for DB connection
+!connection
+  ? console.log('Error connecting db 💩')
+  : console.log('Db connected successfully 🍔');
 // end Mongoose
 
 // create Apollo/GraphQL server
@@ -55,6 +63,6 @@ const server = new ApolloServer({
 // end create Apollo/GraphQL server
 
 // server
-server.listen(4000).then(({
+server.listen(port).then(({
     url
 }) => console.log(`🚀 Server listening in ${url} 🦄`));

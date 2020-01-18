@@ -13,7 +13,7 @@ type PostsActionTree = ActionTree<PostsState, RootState>;
 export const actions: PostsActionTree = {
   async getPost(context: PostsActionContext): Promise<any> {
     try {
-      // Use ApolloCLient to fire getPosts query
+      // Use ApolloClient to fire getPosts query
       const {data}: ApolloQueryResult<Post[]> = await apolloClient.query({
         query: gql `
           query {
