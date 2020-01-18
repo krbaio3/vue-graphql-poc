@@ -27,3 +27,6 @@ yarn lint
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
+
+### Read this threads
+[vuex-class mapper](https://github.com/vuejs/vue-class-component/issues/109).

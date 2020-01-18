@@ -13,3 +13,19 @@ export interface Post {
   createdDate: Date;
   message: string[];
 }
+
+export interface QueryGetPosts {
+  getPosts: Post[];
+}
+
+export const POSTS_TYPES = {
+  mutations: {
+    SETPOSTS: 'SETPOSTS',
+  },
+  getters: {
+    GETPOST: 'GETPOSTS',
+  },
+  actions: {
+    ACTPOSTS: 'ACTPOSTS',
+  },
+};

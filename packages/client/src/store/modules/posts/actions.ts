@@ -1,9 +1,9 @@
 import Vue from 'vue';
 import { ActionContext, ActionTree } from 'vuex';
-import { PostsState, Post } from './types';
+import { PostsState, Post, QueryGetPosts } from './types';
 import { RootState } from '@/store/types';
 
-import { defaultClient as apolloClient} from '@/plugins/graphql';
+import { defaultClient as apolloClient } from '@/plugins/graphql';
 import { gql, ApolloQueryResult } from 'apollo-boost';
 
 
@@ -11,11 +11,13 @@ type PostsActionContext = ActionContext<PostsState, RootState>;
 type PostsActionTree = ActionTree<PostsState, RootState>;
 
 export const actions: PostsActionTree = {
-  async getPost(context: PostsActionContext): Promise<any> {
+  // Se puede usar sin el async/await
+  async ACTPOST(context: PostsActionContext): Promise<any> {
     try {
+      context.commit('startProcesing', null, { root: true });
       // Use ApolloCLient to fire getPosts query
-      const {data}: ApolloQueryResult<Post[]> = await apolloClient.query({
-        query: gql `
+      const { data, errors }: ApolloQueryResult<QueryGetPosts> = await apolloClient.query({
+        query: gql`
           query {
             getPosts {
               _id
@@ -24,14 +26,16 @@ export const actions: PostsActionTree = {
             }
         }`,
       });
-      const payload = data;
-      // tslint:disable-next-line:no-console
-      console.log(payload);
-      // tslint:disable-next-line:no-console
-      // console.log(response);
+      if (!errors) {
+        context.commit('SETPOSTS', data.getPosts);
+        // context.commit('setError', {isError: true, message: 'Esto es una prueba'}, { root: true });
+      }
     } catch (e) {
       // tslint:disable-next-line:no-console
       console.error(e);
+      context.commit('setError', e, { root: true });
+    } finally {
+      context.commit('stopProcesing', null, { root: true });
     }
   },
 };
