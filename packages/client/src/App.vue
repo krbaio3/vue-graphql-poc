@@ -10,6 +10,7 @@
         fullscreen
         persistent
         transition="dialog-transition"
+        :class="{blockUI: processing}"
       >
         <v-container fill-height :class="{blockUI: processing}">
           <v-layout
@@ -166,8 +167,8 @@ export default class App extends Vue {
 </script>
 <style lang="scss" scoped>
 .blockUI {
-  position: absolute;
-  background-color: rgba(168, 168, 168, 0.6);
+  // position: absolute;
+  // background-color: rgba(168, 168, 168, 0.6);
 }
 .fade-enter-active,
 .fade-leave-active {

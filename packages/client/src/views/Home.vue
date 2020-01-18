@@ -25,7 +25,7 @@
 import {Component, Vue} from 'vue-property-decorator';
 import { gql } from 'apollo-boost';
 import { Action, Getter } from 'vuex-class';
-import { Post } from '../store/modules/posts/types';
+import { Post, POSTS_TYPES } from '../store/modules/posts/types';
 
 const namespace: string = 'postsModule';
 

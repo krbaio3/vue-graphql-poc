@@ -1,10 +1,11 @@
 import Vue from 'vue';
 import { ActionContext, ActionTree } from 'vuex';
-import { PostsState, Post, QueryGetPosts } from './types';
+import { PostsState, QueryGetPosts } from './types';
 import { RootState } from '@/store/types';
 
 import { defaultClient as apolloClient } from '@/plugins/graphql';
-import { gql, ApolloQueryResult } from 'apollo-boost';
+import { ApolloQueryResult } from 'apollo-boost';
+import gqlGetPost from '@/components/Post/queries/GetPosts.gql';
 
 
 type PostsActionContext = ActionContext<PostsState, RootState>;
@@ -17,14 +18,7 @@ export const actions: PostsActionTree = {
       context.commit('startProcesing', null, { root: true });
       // Use ApolloCLient to fire getPosts query
       const { data, errors }: ApolloQueryResult<QueryGetPosts> = await apolloClient.query({
-        query: gql`
-          query {
-            getPosts {
-              _id
-              title
-              imageUrl
-            }
-        }`,
+        query: gqlGetPost,
       });
       if (!errors) {
         context.commit('SETPOSTS', data.getPosts);
