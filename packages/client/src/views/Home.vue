@@ -1,12 +1,9 @@
 <template>
   <v-container
-    class="mt-6 text-center"
-    v-if="getPosts"
-    @click="handleGetCarouselPost"
-  >
-  Click Me
-    <!-- <v-flex xs12>
+    class="mt-6 text-center">
+    <v-flex xs12>
       <v-carousel
+        v-if="getPosts.length > 0"
         v-bind="{'cycle': true}"
         interval="3000"
       >
@@ -20,14 +17,15 @@
           >{{post.title}}</h1>
         </v-carousel-item>
       </v-carousel>
-    </v-flex> -->
+    </v-flex>
   </v-container>
 </template>
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
 import { gql } from 'apollo-boost';
-import { Action } from 'vuex-class';
+import { Action, Getter } from 'vuex-class';
+import { Post } from '../store/modules/posts/types';
 
 const namespace: string = 'postsModule';
 
@@ -35,12 +33,23 @@ const namespace: string = 'postsModule';
   name: 'Home',
 })
 export default class AddPost extends Vue {
-  @Action('getPost', {namespace}) public handleGetCarouselPost!: () => void;
-  private getPosts = {};
+  @Action('ACTPOST', {namespace})
+  public handleGetCarouselPost!: () => void;
+  @Getter('GETPOSTS', {namespace})
+  public handleGetPosts!: Post[];
+  // private getPosts = {};
 
   // private handleGetCarouselPost() {
     // reach out to Vuex store, fire action that gets posts for carousel
   // }
+
+  public get getPosts() {
+    return this.handleGetPosts;
+  }
+
+  private created() {
+    this.handleGetCarouselPost();
+  }
 }
 </script>
 <style lang="scss" scoped>

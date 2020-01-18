@@ -1,7 +1,39 @@
 <template>
   <v-app>
+    <v-layout
+      row
+        v-if="processing"
+        :class="{blockUI: processing}"
+    >
+      <v-dialog
+        v-model="processing"
+        fullscreen
+        persistent
+        transition="dialog-transition"
+      >
+        <v-container fill-height :class="{blockUI: processing}">
+          <v-layout
+            row
+            justify-center
+            align-center
+          >
+            <v-progress-circular
+              indeterminate
+              :size="70"
+              :width="7"
+              color="secondary"
+            ></v-progress-circular>
+          </v-layout>
+        </v-container>
+
+      </v-dialog>
+    </v-layout>
     <!-- Side Navbar -->
-    <SideNavbar :toogleSideNavbar="toogleSideNavbar" :sideNavbar="sideNavbar" :sideNavItems="sideNavItems"></SideNavbar>
+    <SideNavbar
+      :toogleSideNavbar="toogleSideNavbar"
+      :sideNavbar="sideNavbar"
+      :sideNavItems="sideNavItems"
+    ></SideNavbar>
     <!-- <v-navigation-drawer app temporary fixed v-model="sideNavbar">
       <v-toolbar color="accent" dark text>
         <v-app-bar-nav-icon @click="toogleSideNavbar"></v-app-bar-nav-icon>
@@ -10,8 +42,8 @@
         </router-link>
       </v-toolbar>
       <v-divider></v-divider> -->
-      <!-- Side Navbar -->
-      <!-- <v-list shaped>
+    <!-- Side Navbar -->
+    <!-- <v-list shaped>
         <v-list-item ripple v-for="(item, index) in sideNavItems" :key="index" :to="item.link">
             <v-list-item-icon>
               <v-icon v-text="item.icon"></v-icon>
@@ -22,11 +54,19 @@
           </v-list-item>
       </v-list>
     </v-navigation-drawer> -->
-    <v-app-bar fixed color="primary" dark>
+    <v-app-bar
+      fixed
+      color="primary"
+      dark
+    >
       <!-- App Title -->
       <v-app-bar-nav-icon @click="toogleSideNavbar"></v-app-bar-nav-icon>
       <v-toolbar-title class="hidden-xs-only">
-        <router-link to="/" tag="span" style="cursor: pointer">
+        <router-link
+          to="/"
+          tag="span"
+          style="cursor: pointer"
+        >
           VueShare
         </router-link>
       </v-toolbar-title>
@@ -52,7 +92,10 @@
           :key="index"
           :to="item.link"
         >
-          <v-icon class="hidden-sm-only" left>{{ item.icon }}</v-icon>
+          <v-icon
+            class="hidden-sm-only"
+            left
+          >{{ item.icon }}</v-icon>
           {{ item.title }}
         </v-btn>
       </v-toolbar-items>
@@ -64,6 +107,12 @@
         </transition>
       </v-container>
     </main>
+    <v-alert
+      type="error"
+      v-if="error.isError"
+    >
+      {{error.message}}
+    </v-alert>
   </v-app>
 </template>
 
@@ -72,6 +121,9 @@ import { Component, Vue } from 'vue-property-decorator';
 import colors from 'vuetify/es5/util/colors';
 import HelloWorld from '@/components/HelloWorld.vue';
 import SideNavbar from '@/components/Shared/Side-Navbar.vue';
+import { Getter } from 'vuex-class';
+import { mapGetters } from 'vuex';
+import { ErrorObject } from './store/types';
 
 @Component({
   name: 'App',
@@ -79,9 +131,18 @@ import SideNavbar from '@/components/Shared/Side-Navbar.vue';
     HelloWorld,
     SideNavbar,
   },
+  computed: {
+     ...mapGetters({
+      error: 'getError',
+      processing: 'processing',
+    }),
+  },
 })
 export default class App extends Vue {
   public sideNavbar: boolean = false;
+  public error!: ErrorObject;
+
+  // methods
   public toogleSideNavbar(): boolean {
     this.sideNavbar = !this.sideNavbar;
     return this.sideNavbar;
@@ -104,6 +165,10 @@ export default class App extends Vue {
 }
 </script>
 <style lang="scss" scoped>
+.blockUI {
+  position: absolute;
+  background-color: rgba(168, 168, 168, 0.6);
+}
 .fade-enter-active,
 .fade-leave-active {
   transition-property: opacity;
