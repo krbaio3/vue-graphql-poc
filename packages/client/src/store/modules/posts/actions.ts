@@ -5,7 +5,7 @@ import { RootState } from '@/store/types';
 
 import { defaultClient as apolloClient } from '@/plugins/graphql';
 import { ApolloQueryResult } from 'apollo-boost';
-import gqlGetPost from '@/components/Post/queries/GetPosts.gql';
+import gqlGetPost from '@/components/Post/queries/GetPosts.graphql';
 
 
 type PostsActionContext = ActionContext<PostsState, RootState>;
@@ -15,7 +15,7 @@ export const actions: PostsActionTree = {
   // Se puede usar sin el async/await
   async ACTPOST(context: PostsActionContext): Promise<any> {
     try {
-      context.commit('startProcesing', null, { root: true });
+      context.commit('startProcessing', null, { root: true });
       // Use ApolloCLient to fire getPosts query
       const { data, errors }: ApolloQueryResult<QueryGetPosts> = await apolloClient.query({
         query: gqlGetPost,
@@ -29,7 +29,7 @@ export const actions: PostsActionTree = {
       console.error(e);
       context.commit('setError', e, { root: true });
     } finally {
-      context.commit('stopProcesing', null, { root: true });
+      context.commit('stopProcessing', null, { root: true });
     }
   },
 };
