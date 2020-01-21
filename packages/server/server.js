@@ -1,7 +1,8 @@
-const { ApolloServer } = require('apollo-server');
+const { ApolloServer, AuthenticationError } = require('apollo-server');
 const { connect, set, connection } = require('mongoose');
 const { readFileSync } = require('fs');
 const { join } = require('path');
+const { verify } = require('jsonwebtoken');
 
 const port = process.env.PORT || 4000;
 
@@ -17,17 +18,17 @@ const User = require('./models/User');
 switch (process.env.NODE_ENV) {
   case 'production':
     require('dotenv').config({
-      path: '.env.production'
+      path: '.env.production',
     });
     break;
   case 'develop':
     require('dotenv').config({
-      path: '.env.development'
+      path: '.env.development',
     });
     break;
   default:
     require('dotenv').config({
-      path: '.env'
+      path: '.env',
     });
     break;
 }
@@ -36,10 +37,10 @@ switch (process.env.NODE_ENV) {
 // Mongoose MLab DB
 connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
-  useUnifiedTopology: true
+  useUnifiedTopology: true,
 })
   .then(() => console.log('DB connected'))
-  .catch(err => console.error(err));
+  .catch((err) => console.error(err));
 set('useCreateIndex', true);
 
 // Added check for DB connection
@@ -48,19 +49,36 @@ set('useCreateIndex', true);
   : console.log('Db connected successfully 🍔');
 // end Mongoose
 
+// Verify the JWT Token from client
+const getUser = async (token) => {
+  if (token) {
+    let user = {};
+    try {
+      user = await verify(token, process.env.SECRET);
+      console.log(user);
+    } catch (error) {
+      throw new AuthenticationError(
+        'La sesion ha terminado. Vuelva a hacer Sign In'
+      );
+    } finally {
+      return user;
+    }
+  }
+};
+
 // create Apollo/GraphQL server
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: {
-    User,
-    Post
-  }
+  context: async ({ req }) => {
+    const token = req.header['aut horization'];
+    return { User, Post, currentUser: await getUser(token) };
+  },
 });
 // end create Apollo/GraphQL server
 
-// server. 
+// server.
 // For more info see: https://nodejs.org/api/net.html#net_server_listen_options_callback
 server
-  .listen({port, path:'/'})
+  .listen({ port, path: '/' })
   .then(({ url }) => console.log(`🚀 Server listening in ${url} 🦄`));
