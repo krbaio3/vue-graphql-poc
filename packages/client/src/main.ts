@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import App from './App.vue';
-import router from './router';
+import { router } from './router';
 import { store } from './store';
 import vuetify from './plugins/vuetify';
 import { apolloProvider } from './plugins/graphql';
@@ -13,4 +13,8 @@ new Vue({
   store,
   vuetify,
   render: (h) => h(App),
+  created() {
+    // execute getCurrentUser query
+    this.$store.dispatch('currentUser');
+  },
 }).$mount('#app');

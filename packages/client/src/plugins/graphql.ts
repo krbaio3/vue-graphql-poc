@@ -1,3 +1,4 @@
+// tslint:disable: no-console
 import Vue from 'vue';
 import ApolloClient, { Operation } from 'apollo-boost';
 import VueApollo from 'vue-apollo';
@@ -30,6 +31,10 @@ export const defaultClient = new ApolloClient({
     }
     if (graphQLErrors) {
       for (const err of graphQLErrors) {
+        if (err?.extensions?.code === 'UNAUTHENTICATED') {
+          localStorage.setItem('token', '');
+          console.log('Hacer el redirect');
+        }
         // tslint:disable-next-line: no-console
         console.dir(err);
       }

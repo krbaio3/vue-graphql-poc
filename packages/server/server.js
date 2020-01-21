@@ -51,17 +51,15 @@ set('useCreateIndex', true);
 
 // Verify the JWT Token from client
 const getUser = async (token) => {
+  // console.log('entra');
+  // console.log('token', token);
   if (token) {
-    let user = {};
     try {
-      user = await verify(token, process.env.SECRET);
-      console.log(user);
+      return await verify(token, process.env.SECRET);
     } catch (error) {
       throw new AuthenticationError(
         'La sesion ha terminado. Vuelva a hacer Sign In'
       );
-    } finally {
-      return user;
     }
   }
 };
@@ -71,7 +69,8 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: async ({ req }) => {
-    const token = req.header['aut horization'];
+    // console.log(req.headers['authorization']);
+    const token = req.headers['authorization'];
     return { User, Post, currentUser: await getUser(token) };
   },
 });

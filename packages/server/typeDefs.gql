@@ -28,7 +28,7 @@ type Message {
 }
 
 type Token {
-    token: String!
+  token: String!
 }
 
 type Mutation {
@@ -47,4 +47,5 @@ type Query {
   getUser(username: String): User
   getPosts: [Post]
   getAllUser: [User]
+  getCurrentUser: User
 }

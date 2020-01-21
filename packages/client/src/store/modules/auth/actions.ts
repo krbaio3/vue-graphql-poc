@@ -8,6 +8,7 @@ import { ApolloQueryResult, FetchResult } from 'apollo-boost';
 import gqlSignInUser from '@/components/Auth/queries/SignInUser.graphql';
 import gqlSignUpUser from '@/components/Auth/queries/SignUpUser.graphql';
 import { SignInUser } from './types';
+import { router } from '@/router';
 
 
 type AuthActionContext = ActionContext<AuthState, RootState>;
@@ -28,6 +29,8 @@ export const actions: AuthActionTree = {
         // tslint:disable-next-line: no-console
         console.log(data.signInUser.token);
         context.commit('SET_TOKEN', data.signInUser.token);
+        // to make sure created method is run in main.js (we run getCurrentUser), reload the page
+
       }
     } catch (e) {
       // tslint:disable-next-line:no-console

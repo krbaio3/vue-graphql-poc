@@ -10,12 +10,24 @@ const createToken = (user, secret, expiresIn) => {
 
 module.exports = {
   Query: {
+    getCurrentUser: async (_, args, { User, currentUser }) => {
+      if (!currentUser) {
+        return null;
+      }
+      const user = await User.findOne({
+        username: currentUser.username,
+      }).populate({
+        path: 'favorites',
+        model: 'Post',
+      });
+      return user;
+    },
     getPosts: async (_, args, { Post }) => {
       const post = await Post.find({})
         .sort({ createdDate: 'desc' })
         .populate({
           model: 'User',
-          path: 'createdBy'
+          path: 'createdBy',
         });
       return post;
     },
@@ -30,7 +42,7 @@ module.exports = {
       }
 
       return user;
-    }
+    },
   },
   Mutation: {
     addPost: async (
@@ -43,13 +55,13 @@ module.exports = {
         imageUrl,
         categories,
         description,
-        createdBy: creatorID
+        createdBy: creatorID,
       }).save();
       return newPost;
     },
     signUpUser: async (_, { username, email, password }, { User }) => {
       const user = await User.findOne({
-        username
+        username,
       });
 
       if (user) {
@@ -59,13 +71,13 @@ module.exports = {
       const newUser = await new User({
         username,
         email,
-        password
+        password,
       }).save();
       return { token: createToken(newUser, process.env.SECRET, EXPIRES_IN) };
     },
     signInUser: async (_, { username, password }, { User }) => {
       const user = await User.findOne({
-        username
+        username,
       });
 
       if (!user) {
@@ -79,6 +91,6 @@ module.exports = {
       }
 
       return { token: createToken(user, process.env.SECRET, EXPIRES_IN) };
-    }
-  }
+    },
+  },
 };
