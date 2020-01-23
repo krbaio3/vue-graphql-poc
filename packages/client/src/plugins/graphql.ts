@@ -11,8 +11,7 @@ export const defaultClient = new ApolloClient({
     credentials: 'include',
   },
   request: (operation: Operation) => {
-    // tslint:disable-next-line: no-debugger
-    debugger;
+
     // if no token in localStorage, add it
     if (!localStorage.token) {
       localStorage.setItem('token', '');

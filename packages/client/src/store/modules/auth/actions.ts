@@ -27,10 +27,11 @@ export const actions: AuthActionTree = {
         });
       if (!errors) {
         // tslint:disable-next-line: no-console
+        debugger;
         console.log(data.signInUser.token);
         context.commit('SET_TOKEN', data.signInUser.token);
         // to make sure created method is run in main.js (we run getCurrentUser), reload the page
-
+        router.go(0);
       }
     } catch (e) {
       // tslint:disable-next-line:no-console

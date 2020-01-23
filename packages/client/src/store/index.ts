@@ -4,6 +4,7 @@ import Vuex, { StoreOptions, ActionContext } from 'vuex';
 import { RootState, ErrorObject, User } from './types';
 import { postsModule } from './modules/posts';
 // import { todoModule } from './modules/todo/index';
+import { vuexPersistence } from '@/plugins/vuex-persist';
 import { authModule } from './modules/auth/index';
 import { defaultClient as apolloClient } from '@/plugins/graphql';
 import gqlGetCurrentUser from '@/queries/GetCurrentUser.graphql';
@@ -63,7 +64,9 @@ const rootStore: StoreOptions<RootState> = {
       apolloClient.query({
         query: gqlGetCurrentUser,
       }).then(({ data }) => {
+        // debugger;
         commit('setCurrentUser', data.getCurrentUser);
+        // Hacer el redirect aqui o en el componente
         console.log(data.getCurrentUser);
       })
         .catch((error) => {
@@ -78,6 +81,7 @@ const rootStore: StoreOptions<RootState> = {
     postsModule,
     authModule,
   },
+  plugins: [vuexPersistence.plugin],
 };
 
 export const store = new Vuex.Store<RootState>(rootStore);
