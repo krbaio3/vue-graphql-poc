@@ -63,7 +63,9 @@ const rootStore: StoreOptions<RootState> = {
       apolloClient.query({
         query: gqlGetCurrentUser,
       }).then(({ data }) => {
+        // debugger;
         commit('setCurrentUser', data.getCurrentUser);
+        // Hacer el redirect aqui o en el componente
         console.log(data.getCurrentUser);
       })
         .catch((error) => {
