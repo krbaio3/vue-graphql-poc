@@ -10,27 +10,7 @@
             </v-dialog>
         </v-layout>
         <!-- Side Navbar -->
-        <SideNavbar :toogleSideNavbar="toogleSideNavbar" :sideNavbar="sideNavbar" :sideNavItems="sideNavItems"></SideNavbar>
-        <!-- <v-navigation-drawer app temporary fixed v-model="sideNavbar">
-          <v-toolbar color="accent" dark text>
-            <v-app-bar-nav-icon @click="toogleSideNavbar"></v-app-bar-nav-icon>
-            <router-link to="/" tag="span" style="cursor: pointer">
-              <h1 class="title pl-3">VueShare</h1>
-            </router-link>
-          </v-toolbar>
-          <v-divider></v-divider> -->
-        <!-- Side Navbar -->
-        <!-- <v-list shaped>
-            <v-list-item ripple v-for="(item, index) in sideNavItems" :key="index" :to="item.link">
-                <v-list-item-icon>
-                  <v-icon v-text="item.icon"></v-icon>
-                </v-list-item-icon>
-                <v-list-item-content>
-                  <v-list-item-title v-text="item.title"></v-list-item-title>
-                </v-list-item-content>
-              </v-list-item>
-          </v-list>
-        </v-navigation-drawer> -->
+        <SideNavbar :toogleSideNavbar="toogleSideNavbar" :sideNavbar="sideNavbar" :sideNavItems="sideNavItems" :isUser="user" @handleSignOutUser="handleSignOutUser"></SideNavbar>
         <v-app-bar fixed color="primary" dark>
             <!-- App Title -->
             <v-app-bar-nav-icon @click="toogleSideNavbar"></v-app-bar-nav-icon>
@@ -49,6 +29,18 @@
                     <v-icon class="hidden-sm-only" left>{{ item.icon }}</v-icon>
                     {{ item.title }}
                 </v-btn>
+                <!-- Profile Button -->
+                <v-btn text to="/profile" v-if="user">
+                  <v-icon class="hidden-sm-only" left>mdi-account</v-icon>
+                  <v-badge right color="blue darken-2">
+                    <span slot="badge">1</span>
+                    <!--slot can be any component-->
+                    Profile
+                  </v-badge>
+                </v-btn>
+                <!-- SignOut Button -->
+                <v-btn text to="/signout" v-if="user" @click="handleSignOutUser">
+                <v-icon class="hidden-sm-only" left>mdi-exit-to-app</v-icon> SignOut</v-btn>
             </v-toolbar-items>
         </v-app-bar>
         <main>
@@ -69,9 +61,9 @@ import { Component, Vue } from 'vue-property-decorator';
 import colors from 'vuetify/es5/util/colors';
 import HelloWorld from '@/components/HelloWorld.vue';
 import SideNavbar from '@/components/Shared/Side-Navbar.vue';
-import { Getter } from 'vuex-class';
+import { Getter, Action, namespace } from 'vuex-class';
 import { mapGetters } from 'vuex';
-import { ErrorObject } from './store/types';
+import { ErrorObject, User } from './store/types';
 
 @Component({
     name: 'App',
@@ -83,46 +75,67 @@ import { ErrorObject } from './store/types';
         ...mapGetters({
             error: 'getError',
             processing: 'processing',
+            user: 'getCurrentUser',
         }),
     },
 })
 export default class App extends Vue {
-    public sideNavbar: boolean = false;
+  public sideNavbar: boolean = false;
     public error!: ErrorObject;
+    public user!: User;
 
+    @Action('ACT_SIGN_OUT', { namespace: 'authModule' })
+    private handleSignOutUser!: () => {};
+
+    // Computed Properties
+    public get horizontalNavItems() {
+      let items = [
+          { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
+          { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
+          { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
+      ];
+
+      if (this.user) {
+          items = [
+            { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
+         ];
+        }
+      return items;
+    }
+    public get sideNavItems() {
+
+      let items = [
+            { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
+            { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
+            { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
+        ];
+
+      if (this.user) {
+          items = [
+            { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
+            { icon: 'mdi-star-circle', title: 'Create Post', link: '/posts/add' },
+            { icon: 'mdi-account', title: 'Profile', link: '/profile' },
+          ];
+        }
+      return items;
+    }
     // methods
     public toogleSideNavbar(): boolean {
         this.sideNavbar = !this.sideNavbar;
         return this.sideNavbar;
     }
-    public get horizontalNavItems() {
-        return [
-            { icon: 'mdi-chat', title: 'Post', link: '/posts' },
-            { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
-            { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
-        ];
-    }
-    public get sideNavItems() {
-        return [
-            { icon: 'mdi-chat', title: 'Post', link: '/posts' },
-            { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
-            { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
-        ];
-    }
-
 }
 </script>
 
 <style lang="scss" scoped>
 .blockUI {
-    position: absolute;
-    // background-color: rgba(168, 168, 168, 0.6);
+    position: absolute; // background-color: rgba(168, 168, 168, 0.6);
 }
 
 .errorFix {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
 
 .fade-enter-active,
