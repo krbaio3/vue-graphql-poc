@@ -49,21 +49,5 @@ export default class SideNavbar extends Vue {
     private handleSignOutUser() {
       return;
     }
-    // @Getter('getCurrentUser')
-    // public user!: User;
-
-    // methods
-    // private isUser(): boolean {
-    //     return !!this.user;
-    // }
-
-    // private mounted() {
-    //     console.log(this.myUser)
-    // }
-
-    // private handleSignOutUser() {
-    //   this.$emit('handleSignOutUser');
-    // }
-
 }
 </script>

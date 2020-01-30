@@ -10,7 +10,7 @@
             </v-dialog>
         </v-layout>
         <!-- Side Navbar -->
-        <SideNavbar :toogleSideNavbar="toogleSideNavbar" :sideNavbar="sideNavbar" :sideNavItems="sideNavItems" :isUser="user" @handleSignOutUser="handleSignOutUser"></SideNavbar>
+        <SideNavbar :toogleSideNavbar="toogleSideNavbar" :sideNavbar="sideNavbar" :sideNavItems="sideNavItems" :isUser="user" @handleSignOutUser="triggerSignOutUser"></SideNavbar>
         <v-app-bar fixed color="primary" dark>
             <!-- App Title -->
             <v-app-bar-nav-icon @click="toogleSideNavbar"></v-app-bar-nav-icon>
@@ -39,7 +39,7 @@
                   </v-badge>
                 </v-btn>
                 <!-- SignOut Button -->
-                <v-btn text to="/signout" v-if="user" @click="handleSignOutUser">
+                <v-btn text to="/signout" v-if="user" @click="triggerSignOutUser">
                 <v-icon class="hidden-sm-only" left>mdi-exit-to-app</v-icon> SignOut</v-btn>
             </v-toolbar-items>
         </v-app-bar>
@@ -80,12 +80,12 @@ import { ErrorObject, User } from './store/types';
     },
 })
 export default class App extends Vue {
-  public sideNavbar: boolean = false;
+    public sideNavbar: boolean = false;
     public error!: ErrorObject;
     public user!: User;
 
     @Action('ACT_SIGN_OUT', { namespace: 'authModule' })
-    private handleSignOutUser!: () => {};
+    private handleSignOutUser!: () => Promise<any>;
 
     // Computed Properties
     public get horizontalNavItems() {
@@ -124,6 +124,11 @@ export default class App extends Vue {
         this.sideNavbar = !this.sideNavbar;
         return this.sideNavbar;
     }
+
+    private triggerSignOutUser() {
+      this.handleSignOutUser().then(() => this.sideNavbar ? this.sideNavbar = false : void(0));
+    }
+
 }
 </script>
 

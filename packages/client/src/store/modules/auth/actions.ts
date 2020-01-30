@@ -39,7 +39,7 @@ export const actions: AuthActionTree = {
       context.commit('stopProcessing', null, { root: true });
     }
   },
-  async ACT_SIGN_OUT(context: AuthActionContext, payload: any) {
+  async ACT_SIGN_OUT(context: AuthActionContext, payload: any): Promise<any> {
     // clear user in the state
     const clearUser: User = {
       username: '',
@@ -50,7 +50,7 @@ export const actions: AuthActionTree = {
       password: '',
     };
     context.commit('setCurrentUser', null, { root: true });
-    // fdmove the token in localStorage
+    // remove the token in localStorage
     localStorage.setItem('token', '');
     // end Session
     // console.dir(apolloClient);
