@@ -9,6 +9,7 @@ import gqlSignInUser from '@/components/Auth/queries/SignInUser.graphql';
 import gqlSignUpUser from '@/components/Auth/queries/SignUpUser.graphql';
 import { SignInUser } from './types';
 import { router } from '@/router';
+import { User } from '../../types';
 
 
 type AuthActionContext = ActionContext<AuthState, RootState>;
@@ -26,9 +27,6 @@ export const actions: AuthActionTree = {
           variables: payload,
         });
       if (!errors) {
-        // tslint:disable-next-line: no-console
-        debugger;
-        console.log(data.signInUser.token);
         context.commit('SET_TOKEN', data.signInUser.token);
         // to make sure created method is run in main.js (we run getCurrentUser), reload the page
         router.go(0);
@@ -40,5 +38,25 @@ export const actions: AuthActionTree = {
     } finally {
       context.commit('stopProcessing', null, { root: true });
     }
+  },
+  async ACT_SIGN_OUT(context: AuthActionContext, payload: any): Promise<any> {
+    // clear user in the state
+    const clearUser: User = {
+      username: '',
+      avatar: '',
+      email: '',
+      favorites: [],
+      joinDate: '',
+      password: '',
+    };
+    context.commit('setCurrentUser', null, { root: true });
+    // remove the token in localStorage
+    localStorage.setItem('token', '');
+    // end Session
+    // console.dir(apolloClient);
+    await apolloClient.resetStore();
+    // redirect home - kick users out of private pages (i.e. profile)
+    // tslint:disable-next-line:no-empty
+    router.push('/', () => { });
   },
 };

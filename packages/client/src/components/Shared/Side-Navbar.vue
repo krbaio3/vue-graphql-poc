@@ -20,7 +20,7 @@
             </v-list-item>
             <!-- SignOut Button -->
             <!-- TODO: Modificar el array que viene del componente padre, es mas facil -->
-            <v-list-item ripple v-if="!!isUser">
+            <v-list-item ripple v-if="!!isUser" @click="handleSignOutUser">
                 <v-list-item-icon>
                     <v-icon>mdi-exit-to-app</v-icon>
                 </v-list-item-icon>
@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, PropSync } from 'vue-property-decorator';
+import { Component, Vue, Prop, PropSync, Emit } from 'vue-property-decorator';
 import { Getter } from 'vuex-class';
 import { User } from '../../store/types';
 
@@ -45,16 +45,9 @@ export default class SideNavbar extends Vue {
     @Prop({ required: true, type: Function }) public readonly toogleSideNavbar!: boolean;
     @Prop({ required: false, default: false }) public readonly isUser!: User;
     @Prop({ type: Array }) public readonly sideNavItems!: any;
-    // @Getter('getCurrentUser')
-    // public user!: User;
-
-    // methods
-    // private isUser(): boolean {
-    //     return !!this.user;
-    // }
-
-    // private mounted() {
-    //     console.log(this.myUser)
-    // }
+    @Emit('handleSignOutUser')
+    private handleSignOutUser() {
+      return;
+    }
 }
 </script>

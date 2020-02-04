@@ -2,10 +2,7 @@ import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import AddPost from '@/components/Post/AddPost.vue';
-import Posts from '@/components/Post/Posts.vue';
-import Profile from '@/components/Auth/Profile.vue';
-import SignIn from '@/components/Auth/SignIn.vue';
-import SignUp from '@/components/Auth/SignUp.vue';
+import { AuthGuard } from './AuthGuard';
 
 Vue.use(VueRouter);
 
@@ -18,7 +15,7 @@ const routes = [
   {
     path: '/posts',
     name: 'posts',
-    component: () => import(/* webpackChunkName: "about" */ '../components/Post/Posts.vue'),
+    component: () => import(/* webpackChunkName: "posts" */ '../components/Post/Posts.vue'),
   },
   {
     path: '/posts/add',
@@ -28,17 +25,19 @@ const routes = [
   {
     path: '/profile',
     name: 'profile',
-    component: Profile,
+    component: () => import(/* webpackChunkName: "profile" */ '../components/Auth/Profile.vue'),
+    // Control de rutas se puede poner en el componente
+    beforeEnter: AuthGuard,
   },
   {
     path: '/signin',
     name: 'signIn',
-    component: SignIn,
+    component: () => import(/* webpackChunkName: "signIn" */ '../components/Auth/SignIn.vue'),
   },
   {
     path: '/signup',
     name: 'signUp',
-    component: SignUp,
+    component: () => import(/* webpackChunkName: "signUp" */ '../components/Auth/SignUp.vue'),
   },
   {
     path: '/about',

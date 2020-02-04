@@ -82,6 +82,7 @@ export default class SignIn extends Vue {
   @Action('ACT_SIGN_IN_USER', { namespace })
   public actSignInUser!: (signUserData: SignInUser) => void;
 
+  // TODO cambiarlo por un Susbcribe de vuex-class-component
   @Watch('getCurrentUser')
   public onUserChanged(value: User) {
     if (value) {
