@@ -1,59 +1,94 @@
 <template>
-    <v-app>
-        <v-layout row v-if="processing" :class="{blockUI: processing}">
-            <v-dialog v-model="processing" fullscreen persistent transition="dialog-transition" :class="{blockUI: processing}">
-                <v-container fill-height :class="{blockUI: processing}">
-                    <v-layout row justify-center align-center>
-                        <v-progress-circular indeterminate :size="70" :width="7" color="secondary"></v-progress-circular>
-                    </v-layout>
-                </v-container>
-            </v-dialog>
-        </v-layout>
-        <!-- Side Navbar -->
-        <SideNavbar :toogleSideNavbar="toogleSideNavbar" :sideNavbar="sideNavbar" :sideNavItems="sideNavItems" :isUser="user" @handleSignOutUser="triggerSignOutUser"></SideNavbar>
-        <v-app-bar fixed color="primary" dark>
-            <!-- App Title -->
-            <v-app-bar-nav-icon @click="toogleSideNavbar"></v-app-bar-nav-icon>
-            <v-toolbar-title class="hidden-xs-only">
-                <router-link to="/" tag="span" style="cursor: pointer">
-                    VueShare
-                </router-link>
-            </v-toolbar-title>
-            <v-spacer></v-spacer>
-            <!-- Search Input -->
-            <v-text-field name="search" label="label" id="search" placeholder="Search Post" flex prepend-icon="mdi-magnify" color="accent" single-line hide-details></v-text-field>
-            <v-spacer></v-spacer>
-            <!-- Horizontal NavBar Links -->
-            <v-toolbar-items class="hidden-xs-only">
-                <v-btn text v-for="(item, index) in horizontalNavItems" :key="index" :to="item.link">
-                    <v-icon class="hidden-sm-only" left>{{ item.icon }}</v-icon>
-                    {{ item.title }}
-                </v-btn>
-                <!-- Profile Button -->
-                <v-btn text to="/profile" v-if="user">
-                  <v-icon class="hidden-sm-only" left>mdi-account</v-icon>
-                  <v-badge right color="blue darken-2">
-                    <span slot="badge">1</span>
-                    <!--slot can be any component-->
-                    Profile
-                  </v-badge>
-                </v-btn>
-                <!-- SignOut Button -->
-                <v-btn text to="/signout" v-if="user" @click="triggerSignOutUser">
-                <v-icon class="hidden-sm-only" left>mdi-exit-to-app</v-icon> SignOut</v-btn>
-            </v-toolbar-items>
-        </v-app-bar>
-        <main>
-            <v-container class="mt-5">
-                <transition name="fade">
-                    <router-view></router-view>
-                </transition>
-            </v-container>
-        </main>
-        <v-alert type="error" v-if="error.isError">
-            {{error.message}}
-        </v-alert>
-    </v-app>
+  <v-app>
+    <v-layout row v-if="processing" :class="{ blockUI: processing }">
+      <v-dialog
+        v-model="processing"
+        fullscreen
+        persistent
+        transition="dialog-transition"
+        :class="{ blockUI: processing }"
+      >
+        <v-container fill-height :class="{ blockUI: processing }">
+          <v-layout row justify-center align-center>
+            <v-progress-circular
+              indeterminate
+              :size="70"
+              :width="7"
+              color="secondary"
+            ></v-progress-circular>
+          </v-layout>
+        </v-container>
+      </v-dialog>
+    </v-layout>
+    <!-- Side Navbar -->
+    <SideNavbar
+      :toogleSideNavbar="toogleSideNavbar"
+      :sideNavbar="sideNavbar"
+      :sideNavItems="sideNavItems"
+      :isUser="user"
+      @handleSignOutUser="triggerSignOutUser"
+    ></SideNavbar>
+    <v-app-bar fixed color="primary" dark>
+      <!-- App Title -->
+      <v-app-bar-nav-icon @click="toogleSideNavbar"></v-app-bar-nav-icon>
+      <v-toolbar-title class="hidden-xs-only">
+        <router-link to="/" tag="span" style="cursor: pointer">
+          VueShare
+        </router-link>
+      </v-toolbar-title>
+      <v-spacer></v-spacer>
+      <!-- Search Input -->
+      <v-text-field
+        name="search"
+        label="label"
+        id="search"
+        placeholder="Search Post"
+        flex
+        prepend-icon="mdi-magnify"
+        color="accent"
+        single-line
+        hide-details
+      ></v-text-field>
+      <v-spacer></v-spacer>
+      <!-- Horizontal NavBar Links -->
+      <v-toolbar-items class="hidden-xs-only">
+        <v-btn
+          text
+          v-for="(item, index) in horizontalNavItems"
+          :key="index"
+          :to="item.link"
+        >
+          <v-icon class="hidden-sm-only" left>{{ item.icon }}</v-icon>
+          {{ item.title }}
+        </v-btn>
+        <!-- Profile Button -->
+        <v-btn text to="/profile" v-if="user">
+          <v-icon class="hidden-sm-only" left>mdi-account</v-icon>
+          <v-badge right color="blue darken-2">
+            <span slot="badge">1</span>
+            <!--slot can be any component-->
+            Profile
+          </v-badge>
+        </v-btn>
+        <!-- SignOut Button -->
+        <v-btn text to="/signout" v-if="user" @click="triggerSignOutUser">
+          <v-icon class="hidden-sm-only" left>mdi-exit-to-app</v-icon>
+          SignOut</v-btn
+        >
+      </v-toolbar-items>
+    </v-app-bar>
+    <main>
+      <v-container class="mt-5">
+        <transition name="fade">
+          <router-view></router-view>
+        </transition>
+      </v-container>
+    </main>
+    <v-alert type="error" v-if="error.isError">
+      {{ error.message }}
+    </v-alert>
+    {{ user$ }}
+  </v-app>
 </template>
 
 <script lang="ts">
@@ -64,97 +99,107 @@ import SideNavbar from '@/components/Shared/Side-Navbar.vue';
 import { Getter, Action, namespace } from 'vuex-class';
 import { mapGetters } from 'vuex';
 import { ErrorObject, User } from './store/types';
+import { Observable, Subject } from 'rxjs';
+import { store } from './store';
 
 @Component({
-    name: 'App',
-    components: {
-        HelloWorld,
-        SideNavbar,
-    },
-    computed: {
-        ...mapGetters({
-            error: 'getError',
-            processing: 'processing',
-            user: 'getCurrentUser',
-        }),
-    },
+  name: 'App',
+  components: {
+    HelloWorld,
+    SideNavbar,
+  },
+  computed: {
+    ...mapGetters({
+      error: 'getError',
+      processing: 'processing',
+      user: 'getCurrentUser',
+    }),
+  },
+  subscriptions() {
+    const prueba$ = new Subject<any>();
+    const user$ = new Observable(function subscribe(subscriber) {
+      subscriber.next(store.state.user);
+    });
+
+    return {
+      user$,
+    };
+  },
 })
 export default class App extends Vue {
-    public sideNavbar: boolean = false;
-    public error!: ErrorObject;
-    public user!: User;
+  public sideNavbar: boolean = false;
+  public error!: ErrorObject;
+  public user!: User;
 
-    @Action('ACT_SIGN_OUT', { namespace: 'authModule' })
-    private handleSignOutUser!: () => Promise<any>;
+  @Action('ACT_SIGN_OUT', { namespace: 'authModule' })
+  private handleSignOutUser!: () => Promise<any>;
 
-    // Computed Properties
-    public get horizontalNavItems() {
-      let items = [
-          { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
-          { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
-          { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
+  // Computed Properties
+  public get horizontalNavItems() {
+    let items = [
+      { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
+      { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
+      { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
+    ];
+
+    if (this.user) {
+      items = [{ icon: 'mdi-comment-text', title: 'Post', link: '/posts' }];
+    }
+    return items;
+  }
+  public get sideNavItems() {
+    let items = [
+      { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
+      { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
+      { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
+    ];
+
+    if (this.user) {
+      items = [
+        { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
+        { icon: 'mdi-star-circle', title: 'Create Post', link: '/posts/add' },
+        { icon: 'mdi-account', title: 'Profile', link: '/profile' },
       ];
-
-      if (this.user) {
-          items = [
-            { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
-         ];
-        }
-      return items;
     }
-    public get sideNavItems() {
+    return items;
+  }
+  // methods
+  public toogleSideNavbar(): boolean {
+    this.sideNavbar = !this.sideNavbar;
+    return this.sideNavbar;
+  }
 
-      let items = [
-            { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
-            { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
-            { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
-        ];
-
-      if (this.user) {
-          items = [
-            { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
-            { icon: 'mdi-star-circle', title: 'Create Post', link: '/posts/add' },
-            { icon: 'mdi-account', title: 'Profile', link: '/profile' },
-          ];
-        }
-      return items;
-    }
-    // methods
-    public toogleSideNavbar(): boolean {
-        this.sideNavbar = !this.sideNavbar;
-        return this.sideNavbar;
-    }
-
-    private triggerSignOutUser() {
-      this.handleSignOutUser().then(() => this.sideNavbar ? this.sideNavbar = false : void(0));
-    }
-
+  private triggerSignOutUser() {
+    this.handleSignOutUser().then(() =>
+      this.sideNavbar ? (this.sideNavbar = false) : void 0,
+    );
+  }
 }
 </script>
 
 <style lang="scss" scoped>
 .blockUI {
-    position: absolute; // background-color: rgba(168, 168, 168, 0.6);
+  position: absolute; // background-color: rgba(168, 168, 168, 0.6);
 }
 
 .errorFix {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
+  position: absolute;
+  bottom: 0;
+  width: 100%;
 }
 
 .fade-enter-active,
 .fade-leave-active {
-    transition-property: opacity;
-    transition-duration: 0.25s;
+  transition-property: opacity;
+  transition-duration: 0.25s;
 }
 
 .fade-enter-active {
-    transition-delay: 0.25s;
+  transition-delay: 0.25s;
 }
 
 .fade-enter,
 .fade-leave-active {
-    opacity: 0; // transform: translateX(-25px);
+  opacity: 0; // transform: translateX(-25px);
 }
 </style>

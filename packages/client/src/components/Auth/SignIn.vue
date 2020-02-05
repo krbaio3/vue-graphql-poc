@@ -1,7 +1,5 @@
 <template>
   <v-container grid-list-xs mt-5 text-center pt-5>
-    <!-- <h1>SignIn</h1> -->
-
     <!-- SignIn Title -->
     <v-layout row wrap>
       <v-flex xs12 sm6 offset-sm3>
@@ -82,14 +80,13 @@ export default class SignIn extends Vue {
   @Action('ACT_SIGN_IN_USER', { namespace })
   public actSignInUser!: (signUserData: SignInUser) => void;
 
-  // TODO cambiarlo por un Susbcribe de vuex-class-component
+  // TODO cambiarlo por un Susbcribe de vuex-class-component o vue-rxjs
   @Watch('getCurrentUser')
   public onUserChanged(value: User) {
     if (value) {
       this.$router.push('/');
     }
   }
-
 
   // methods
   public handleSignInUser() {

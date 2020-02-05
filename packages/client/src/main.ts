@@ -4,6 +4,7 @@ import { router } from './router';
 import { store } from './store';
 import vuetify from './plugins/vuetify';
 import { apolloProvider } from './plugins/graphql';
+import '@/plugins/vue-rx';
 
 Vue.config.productionTip = false;
 
