@@ -9,4 +9,8 @@ export const getters: PostsGetter = {
     const { token } = state;
     return token;
   },
+  GET_LOADING_BTN(state: AuthState): boolean {
+    const { loadingBtn } = state;
+    return loadingBtn;
+  },
 };

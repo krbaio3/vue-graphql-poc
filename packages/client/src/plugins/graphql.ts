@@ -2,6 +2,7 @@
 import Vue from 'vue';
 import ApolloClient, { Operation } from 'apollo-boost';
 import VueApollo from 'vue-apollo';
+import { store } from '@/store';
 
 // setup ApolloClient
 export const defaultClient = new ApolloClient({
@@ -23,7 +24,7 @@ export const defaultClient = new ApolloClient({
       },
     });
   },
-  onError: ({ graphQLErrors, networkError }) => {
+  onError({ graphQLErrors, networkError }) {
     if (networkError) {
       // tslint:disable-next-line: no-console
       console.error('[networkError]', networkError);
@@ -36,6 +37,9 @@ export const defaultClient = new ApolloClient({
         }
         // tslint:disable-next-line: no-console
         console.dir(err);
+        if (err.name === 'AuthenticationError') {
+          store.commit('setError', err, { root: true });
+        }
       }
     }
   },

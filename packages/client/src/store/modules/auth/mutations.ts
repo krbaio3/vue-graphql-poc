@@ -11,4 +11,7 @@ export const mutations: AuthMutationsTree = {
     // localStorage.token = payload;
     localStorage.setItem('token', payload);
   },
+  SET_LOADING_BTN(state: AuthState, payload: boolean): void {
+    state.loadingBtn = payload;
+  },
 };

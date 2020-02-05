@@ -1,5 +1,6 @@
 export interface AuthState {
   token: string;
+  loadingBtn: boolean;
 }
 
 export interface QueryGetAuth {

@@ -27,7 +27,7 @@ export const actions: PostsActionTree = {
     } catch (e) {
       // tslint:disable-next-line:no-console
       console.error(e);
-      context.commit('setError', e, { root: true });
+      // context.commit('setError', e, { root: true });
     } finally {
       context.commit('stopProcessing', null, { root: true });
     }

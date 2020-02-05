@@ -4,13 +4,14 @@ import { router } from './router';
 import { store } from './store';
 import vuetify from './plugins/vuetify';
 import { apolloProvider } from './plugins/graphql';
+import '@/plugins/vue-rx';
 
 Vue.config.productionTip = false;
 
 new Vue({
-  apolloProvider,
   router,
   store,
+  apolloProvider,
   vuetify,
   render: (h) => h(App),
   created() {

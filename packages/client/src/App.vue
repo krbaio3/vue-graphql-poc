@@ -31,16 +31,16 @@
                 </v-btn>
                 <!-- Profile Button -->
                 <v-btn text to="/profile" v-if="user">
-                  <v-icon class="hidden-sm-only" left>mdi-account</v-icon>
-                  <v-badge right color="blue darken-2">
-                    <span slot="badge">1</span>
-                    <!--slot can be any component-->
-                    Profile
-                  </v-badge>
+                    <v-icon class="hidden-sm-only" left>mdi-account</v-icon>
+                    <v-badge right color="blue darken-2">
+                        <span slot="badge">1</span>
+                        <!--slot can be any component-->
+                        Profile
+                    </v-badge>
                 </v-btn>
                 <!-- SignOut Button -->
                 <v-btn text to="/signout" v-if="user" @click="triggerSignOutUser">
-                <v-icon class="hidden-sm-only" left>mdi-exit-to-app</v-icon> SignOut</v-btn>
+                    <v-icon class="hidden-sm-only" left>mdi-exit-to-app</v-icon> SignOut</v-btn>
             </v-toolbar-items>
         </v-app-bar>
         <main>
@@ -53,23 +53,31 @@
         <v-alert type="error" v-if="error.isError">
             {{error.message}}
         </v-alert>
+        <SnackbarComponent :isUser="user"></SnackbarComponent>
     </v-app>
 </template>
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import colors from 'vuetify/es5/util/colors';
 import HelloWorld from '@/components/HelloWorld.vue';
 import SideNavbar from '@/components/Shared/Side-Navbar.vue';
+import SnackbarComponent from '@/components/Shared/Snackbar.vue';
 import { Getter, Action, namespace } from 'vuex-class';
 import { mapGetters } from 'vuex';
 import { ErrorObject, User } from './store/types';
+import { Route } from 'vue-router';
+import { store } from './store/index';
+import { interval, Observable, of } from 'rxjs';
+import { startWith, scan, takeWhile, concat, timeInterval } from 'rxjs/operators';
 
+// TODO falta al final de la HU48 poner un wacher para que el snackbar se vea una sola vez cuando hagas login.
+// TODO Si se hace, hacerlo con vue-rx
 @Component({
     name: 'App',
     components: {
         HelloWorld,
         SideNavbar,
+        SnackbarComponent,
     },
     computed: {
         ...mapGetters({
@@ -78,46 +86,57 @@ import { ErrorObject, User } from './store/types';
             user: 'getCurrentUser',
         }),
     },
+    subscriptions() {
+      const user$ = new Observable(subscribe => {
+        subscribe.next(this.$store.state.user);
+      });
+      return {
+        user$,
+      };
+    },
 })
 export default class App extends Vue {
     public sideNavbar: boolean = false;
     public error!: ErrorObject;
     public user!: User;
+    // public user$!: Observable<User>;
 
     @Action('ACT_SIGN_OUT', { namespace: 'authModule' })
-    private handleSignOutUser!: () => Promise<any>;
+    private handleSignOutUser!: () => Promise < any > ;
 
     // Computed Properties
     public get horizontalNavItems() {
-      let items = [
-          { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
-          { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
-          { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
-      ];
-
-      if (this.user) {
-          items = [
-            { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
-         ];
-        }
-      return items;
-    }
-    public get sideNavItems() {
-
-      let items = [
+        // debugger
+        let items = [
             { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
             { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
             { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
         ];
 
-      if (this.user) {
-          items = [
-            { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
-            { icon: 'mdi-star-circle', title: 'Create Post', link: '/posts/add' },
-            { icon: 'mdi-account', title: 'Profile', link: '/profile' },
-          ];
+        if (this.user) {
+            items = [
+                { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
+            ];
         }
-      return items;
+        return items;
+    }
+
+    public get sideNavItems() {
+
+        let items = [
+            { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
+            { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
+            { icon: 'mdi-pencil', title: 'Sign Up', link: '/signup' },
+        ];
+
+        if (this.user) {
+            items = [
+                { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
+                { icon: 'mdi-star-circle', title: 'Create Post', link: '/posts/add' },
+                { icon: 'mdi-account', title: 'Profile', link: '/profile' },
+            ];
+        }
+        return items;
     }
     // methods
     public toogleSideNavbar(): boolean {
@@ -126,9 +145,12 @@ export default class App extends Vue {
     }
 
     private triggerSignOutUser() {
-      this.handleSignOutUser().then(() => this.sideNavbar ? this.sideNavbar = false : void(0));
+        this.handleSignOutUser().then(() => this.sideNavbar ? this.sideNavbar = false : void(0));
     }
 
+    private created() {
+      this.$store.dispatch('currentUser');
+    }
 }
 </script>
 

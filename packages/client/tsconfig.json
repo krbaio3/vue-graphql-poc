@@ -18,7 +18,8 @@
       "webpack",
       "webpack-env",
       "vuetify",
-      "graphql"
+      "graphql",
+      "vue-rx"
     ],
     "paths": {
       "@/*": ["src/*"]
