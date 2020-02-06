@@ -22,28 +22,18 @@ export default class SanckBarComponent extends Vue {
     public readonly isUser!: User;
     private showing: boolean = false;
     private subscription$!: Subscription;
-    private myObservable$ = Vue.observable({
-        user: this.$store.state.user,
-    });
-
-    private created() {
-        // console.log(this.isUser.username);
-        // FALLA usar vue-rx
-        if (this.myObservable$ !== null && this.myObservable$.user.username !== '') {
-            return this.showing = true;
-        }
-        return this.showing = false;
-    }
 
     @Watch('isUser')
     private onUserChanged(val: User, oldVal: User) {
-        if (oldVal === null || oldVal.username === '') {
+        if ((val !== null && val.username !== '') && (oldVal !== null && oldVal.username !== val.username)) {
             this.showing = true;
         }
     }
-
-    private subscriptions() {
-        console.log('entra en subscriptions');
+    private get onUser() {
+        if (this.isUser !== null || (this.isUser as User).username === '') {
+            this.showing = true;
+        }
+        return this.isUser;
     }
 }
 </script>

@@ -11,7 +11,7 @@
         <v-layout row wrap>
             <v-flex xs12 sm6 offset-sm3>
                 <v-card color="secondary" dark>
-                  <v-container grid-list-xs>
+                    <v-container grid-list-xs>
                         <v-form @submit.prevent="handleSignInUser" v-model="isFormValid" lazy-validation ref="form">
                             <v-layout row wrap>
                                 <v-flex xs12>
@@ -25,11 +25,11 @@
                             </v-layout>
                             <v-layout row>
                                 <v-flex xs12 text-center>
-                                    <v-btn :disabled="!isFormValid" :loading="loading" type="submit" color="accent" tile depressed>SignIn
+                                    <v-btn :disabled="!isFormValid || loading" :loading="loading" type="submit" color="accent" tile depressed>SignIn
                                         <template v-slot:loader>
-                                          <span class="custom-loader">
-                                            <v-icon light>mdi-cached</v-icon>
-                                          </span>
+                                                                  <span class="custom-loader">
+                                                                    <v-icon light>mdi-cached</v-icon>
+                                                                  </span>
                                         </template>
                                     </v-btn>
                                     <h3>
@@ -81,23 +81,24 @@ export default class SignIn extends Vue {
     public loading!: boolean;
 
     @Action('ACT_SIGN_IN_USER', { namespace })
-    public actSignInUser!: (signUserData: SignInUser) => Promise<any>;
+    public actSignInUser!: (signUserData: SignInUser) => Promise < any > ;
 
     // TODO cambiarlo por un Subscribe de vuex-class-component
     @Watch('getCurrentUser')
     public onUserChanged(value: User) {
         if (value) {
-            this.$router.push('/');
+            this.$router.push({ path: '/' });
         }
     }
 
     // methods
     public handleSignInUser() {
-      if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
-        this.actSignInUser({ username: this.username, password: this.password }).then(() =>
-          router.push({path: '/'}),
-        );
-      }
+        if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
+            this.actSignInUser({ username: this.username, password: this.password }).then((data) => {
+                router.push({ path: '/' });
+            }).catch((error) => console.error(error),
+            );
+        }
     }
 }
 </script>

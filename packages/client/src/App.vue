@@ -1,8 +1,8 @@
 <template>
     <v-app>
-        <v-layout row v-if="processing" :class="{blockUI: processing}">
-            <v-dialog v-model="processing" fullscreen persistent transition="dialog-transition" :class="{blockUI: processing}">
-                <v-container fill-height :class="{blockUI: processing}">
+        <v-layout row v-if="processing" :class="{ blockUI: processing }">
+            <v-dialog v-model="processing" fullscreen persistent transition="dialog-transition" :class="{ blockUI: processing }">
+                <v-container fill-height :class="{ blockUI: processing }">
                     <v-layout row justify-center align-center>
                         <v-progress-circular indeterminate :size="70" :width="7" color="secondary"></v-progress-circular>
                     </v-layout>
@@ -40,7 +40,8 @@
                 </v-btn>
                 <!-- SignOut Button -->
                 <v-btn text to="/signout" v-if="user" @click="triggerSignOutUser">
-                    <v-icon class="hidden-sm-only" left>mdi-exit-to-app</v-icon> SignOut</v-btn>
+                    <v-icon class="hidden-sm-only" left>mdi-exit-to-app</v-icon>
+                    SignOut</v-btn>
             </v-toolbar-items>
         </v-app-bar>
         <main>
@@ -51,9 +52,9 @@
             </v-container>
         </main>
         <v-alert type="error" v-if="error.isError">
-            {{error.message}}
+            {{ error.message }}
         </v-alert>
-        <SnackbarComponent :isUser="user"></SnackbarComponent>
+        <SnackbarComponent :isUser="userOb$"></SnackbarComponent>
     </v-app>
 </template>
 
@@ -65,13 +66,15 @@ import SnackbarComponent from '@/components/Shared/Snackbar.vue';
 import { Getter, Action, namespace } from 'vuex-class';
 import { mapGetters } from 'vuex';
 import { ErrorObject, User } from './store/types';
-import { Route } from 'vue-router';
-import { store } from './store/index';
-import { interval, Observable, of } from 'rxjs';
-import { startWith, scan, takeWhile, concat, timeInterval } from 'rxjs/operators';
+import { Observable, from, BehaviorSubject } from 'rxjs';
+import { switchMap, observeOn } from 'rxjs/operators';
+import { store } from './store';
 
 // TODO falta al final de la HU48 poner un wacher para que el snackbar se vea una sola vez cuando hagas login.
 // TODO Si se hace, hacerlo con vue-rx
+
+
+
 @Component({
     name: 'App',
     components: {
@@ -87,18 +90,21 @@ import { startWith, scan, takeWhile, concat, timeInterval } from 'rxjs/operators
         }),
     },
     subscriptions() {
-      const user$ = new Observable(subscribe => {
-        subscribe.next(this.$store.state.user);
-      });
-      return {
-        user$,
-      };
+        const user$ = new Observable(subscribe => {
+            subscribe.next(this.$store.state.user);
+        });
+        const message$ = new BehaviorSubject(store.state.user);
+        return {
+            user$,
+            message$,
+        };
     },
 })
 export default class App extends Vue {
     public sideNavbar: boolean = false;
     public error!: ErrorObject;
     public user!: User;
+    // public userOb$ = new BehaviorSubject<any>(this.$store.state.user);
     // public user$!: Observable<User>;
 
     @Action('ACT_SIGN_OUT', { namespace: 'authModule' })
@@ -106,7 +112,7 @@ export default class App extends Vue {
 
     // Computed Properties
     public get horizontalNavItems() {
-        // debugger
+        //
         let items = [
             { icon: 'mdi-comment-text', title: 'Post', link: '/posts' },
             { icon: 'mdi-lock-open', title: 'Sign In', link: '/signin' },
@@ -148,9 +154,11 @@ export default class App extends Vue {
         this.handleSignOutUser().then(() => this.sideNavbar ? this.sideNavbar = false : void(0));
     }
 
-    private created() {
-      this.$store.dispatch('currentUser');
+    //// Computed
+    public get userOb$() {
+      return this.$store.getters['getCurrentUser'];
     }
+
 }
 </script>
 

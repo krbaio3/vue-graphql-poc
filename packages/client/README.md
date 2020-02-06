@@ -40,5 +40,4 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### D. Tecnica
 
-- Revisar tratamiento de errores
-- El snackbar de inicio sesion no se muestra cuando debe
+- Revisar tratamiento de errores (mensaje a veces se pisa y posición)
