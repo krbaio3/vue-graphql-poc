@@ -32,4 +32,7 @@ export const actions: PostsActionTree = {
       context.commit('stopProcessing', null, { root: true });
     }
   },
+  ACT_LOADING_POST(context: PostsActionContext, payload: boolean): void {
+    context.commit('SET_LOADING_POST', payload);
+  },
 };

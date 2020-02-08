@@ -24,7 +24,7 @@ const namespace: string = 'postsModule';
 export default class AddPost extends Vue {
     @Action('ACTPOST', { namespace })
     public handleGetCarouselPost!: () => void;
-    @Getter('GETPOSTS', { namespace })
+    @Getter('GET_POST', { namespace })
     public handleGetPosts!: Post[];
     // private getPosts = {};
 

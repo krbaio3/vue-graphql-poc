@@ -38,7 +38,7 @@
                                                       <span class="custom-loader">
                                                         <v-icon light>mdi-cached</v-icon>
                                                       </span>
-</template>
+                                        </template>
                                     </v-btn>
                                     <h3>
                                       Ya tienes una cuenta?

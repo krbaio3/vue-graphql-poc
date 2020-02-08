@@ -1,49 +1,144 @@
 <template>
-  <v-container
-    grid-list-xs
-    class="mt-5"
-  >
-    <h1>AddPost</h1>
-    <div v-if="$apollo.loading">Loading...</div>
-    <ul
-      v-else
-      v-for="(post) in getPosts"
-      :key="post._id"
-    >
-      <li>
-        - {{post.title}}
-        - {{post.imageUrl}}
-        - {{post.description}}
-      </li>
-    </ul>
+  <v-container grid-list-xs mt-5 text-center pt-5>
+    <!-- AddPost Title -->
+    <v-layout row wrap>
+      <v-flex xs12 sm6 offset-sm3>
+        <h1 class="primary--text">Add Post</h1>
+      </v-flex>
+    </v-layout>
+    <!-- Add postForm -->
+    <v-layout row wrap>
+      <v-flex xs12 sm6 offset-sm3>
+        <v-form @submit.prevent="handleAddPost" v-model="isFormValid" lazy-validation ref="form">
+          <!-- Title Input -->
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-text-field
+                :rules="getTitleRules"
+                v-model="title"
+                name="titleField"
+                label="title"
+                id="titleField"
+                type="text"
+                required
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+          <!-- Img URL Input -->
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-text-field
+                :rules="getImageRules"
+                v-model="image"
+                name="imageField"
+                label="image"
+                id="imageField"
+                type="text"
+                required
+              ></v-text-field>
+            </v-flex>
+          </v-layout>
+          <!-- Img Preview -->
+          <v-layout row wrap>
+            <v-flex xs12>
+              <img :src="imageURL" :alt="nameImgURL" height="300px" />
+            </v-flex>
+          </v-layout>
+          <!-- Categories Select -->
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-select
+                :items="itemList"
+                :rules="getCategoriesRules"
+                v-model="item"
+                multiple
+                label="Categories"
+              ></v-select>
+            </v-flex>
+          </v-layout>
+          <v-layout row wrap>
+            <v-flex xs12>
+              <v-textarea
+                :rules="getDescRules"
+                v-model="description"
+                label="Post Tilte"
+                type="text"
+                required
+              ></v-textarea>
+            </v-flex>
+          </v-layout>
+          <v-layout row>
+            <v-flex xs12 text-center>
+              <v-btn :disabled="!isFormValid || loading" :loading="loading" type="submit" color="info" tile depressed>
+                Submit
+                <template v-slot:loader>
+                  <span class="custom-loader">
+                    <v-icon light>mdi-cached</v-icon>
+                  </span>
+                </template>
+              </v-btn>
+              <!-- <v-btn type="submit" color="accent" tile depressed>SignIn</v-btn> -->
+            </v-flex>
+          </v-layout>
+        </v-form>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
 <script lang="ts">
-  import { Vue, Component } from 'vue-property-decorator';
-  import { gql } from 'apollo-boost';
 
-  @Component({
-    name: 'AddPost',
-    apollo: {
-      getPosts: {
-        query: gql `
-          {
-            getPosts {
-            _id
-            title
-            imageUrl
-            description
-          }
-        }`,
-      },
-    },
-  })
-  export default class AddPost extends Vue {
-    private getPosts = {};
+
+import { Vue, Component } from 'vue-property-decorator';
+import { gql } from 'apollo-boost';
+import { Getter } from 'vuex-class';
+
+const namespace = 'postsModule';
+
+@Component({
+  name: 'AddPost',
+})
+export default class AddPost extends Vue {
+  private getPosts = {};
+  private itemList: string[] = ['Art', 'Education', 'Travel', 'Photography', 'Technology'];
+  private item: string = '';
+  private description: string = '';
+  private isFormValid: boolean = true;
+  private title: string = '';
+  private image: string = '';
+  private imageURL: string = 'https://cdn.vuetifyjs.com/images/logos/v-alt.svg';
+  private nameImgURL: string = '';
+  private getTitleRules = [
+    (title: string) => !!title || 'Title is required',
+    (title: string) => title.length < 20 || 'Title must have less 20 characters',
+  ];
+  private getImageRules = [(img: string) => !!img || 'Image is required'];
+  private getDescRules = [
+    (desc: string) => !!desc || 'Description is required',
+    (desc: string) => desc.length <= 200 || 'Description at least less 200 characters',
+  ];
+  private getCategoriesRules = [(categories: string) => categories.length >= 1 || 'At least one category is required'];
+  @Getter('GET_LOADING_POST', { namespace })
+  private loading!: void;
+
+  // ////////
+
+  private handleAddPost(): void {
+
+    const obj = {
+      item: this.item,
+      description: this.description,
+      isFormValid: this.isFormValid,
+      title: this.title,
+      image: this.image,
+      imageURL: this.imageURL,
+      nameImgURL: this.nameImgURL,
+    };
+
+    console.log(obj);
+
   }
+}
 </script>
 
-<style lang="scss" scoped>
-
-</style>
+<style lang="scss" scoped></style>

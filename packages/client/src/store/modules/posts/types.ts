@@ -1,5 +1,6 @@
 export interface PostsState {
   posts: Post[];
+  loading: boolean;
 }
 
 export interface Post {
@@ -23,7 +24,8 @@ export const POSTS_TYPES = {
     SETPOSTS: 'SETPOSTS',
   },
   getters: {
-    GETPOST: 'GETPOSTS',
+    GET_POST: 'GET_POSTS',
+    GET_LOADING_POST: 'GET_LOADING_POST',
   },
   actions: {
     ACTPOSTS: 'ACTPOSTS',

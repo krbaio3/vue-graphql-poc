@@ -90,7 +90,7 @@ import { store } from './store';
         }),
     },
     subscriptions() {
-        const user$ = new Observable(subscribe => {
+        const user$ = new Observable((subscribe) => {
             subscribe.next(this.$store.state.user);
         });
         const message$ = new BehaviorSubject(store.state.user);
@@ -156,7 +156,7 @@ export default class App extends Vue {
 
     //// Computed
     public get userOb$() {
-      return this.$store.getters['getCurrentUser'];
+      return this.$store.getters.getCurrentUser;
     }
 
 }
