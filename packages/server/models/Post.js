@@ -35,7 +35,7 @@ const PostSchema = new Schema({
         required: true,
         ref: 'User'
     },
-    message: [{
+    messages: [{
         messageBody: {
             type: String,
             required: true,

@@ -41,7 +41,8 @@
           <!-- Img Preview -->
           <v-layout row wrap>
             <v-flex xs12>
-              <img :src="imageURL" :alt="nameImgURL" height="300px" />
+              <img v-if="image !== ''" :src="image" :alt="nameImgURL" height="300px" />
+              <img v-else src="../../assets/no-img.jpg" height="300px" />
             </v-flex>
           </v-layout>
           <!-- Categories Select -->
@@ -50,7 +51,7 @@
               <v-select
                 :items="itemList"
                 :rules="getCategoriesRules"
-                v-model="item"
+                v-model="categories"
                 multiple
                 label="Categories"
               ></v-select>
@@ -61,7 +62,7 @@
               <v-textarea
                 :rules="getDescRules"
                 v-model="description"
-                label="Post Tilte"
+                label="Description"
                 type="text"
                 required
               ></v-textarea>
@@ -69,7 +70,12 @@
           </v-layout>
           <v-layout row>
             <v-flex xs12 text-center>
-              <v-btn :disabled="!isFormValid || loading" :loading="loading" type="submit" color="info" tile depressed>
+              <v-btn
+                :disabled="!isFormValid || loading"
+                :loading="loading"
+                type="submit"
+                color="info"
+                tile depressed>
                 Submit
                 <template v-slot:loader>
                   <span class="custom-loader">
@@ -88,55 +94,88 @@
 
 <script lang="ts">
 
+import { Vue, Component, Ref } from 'vue-property-decorator';
+import { Getter, Action } from 'vuex-class';
+import { mapGetters } from 'vuex';
+import { User } from '../../store/types';
+import { AddPost, Post } from '../../store/modules/posts/types';
 
-import { Vue, Component } from 'vue-property-decorator';
-import { gql } from 'apollo-boost';
-import { Getter } from 'vuex-class';
 
 const namespace = 'postsModule';
 
 @Component({
   name: 'AddPost',
+  computed: {
+    ...mapGetters({ user: 'getCurrentUser' }),
+  },
 })
-export default class AddPost extends Vue {
+export default class AddPostComponent extends Vue {
   private getPosts = {};
+
   private itemList: string[] = ['Art', 'Education', 'Travel', 'Photography', 'Technology'];
-  private item: string = '';
-  private description: string = '';
-  private isFormValid: boolean = true;
-  private title: string = '';
-  private image: string = '';
-  private imageURL: string = 'https://cdn.vuetifyjs.com/images/logos/v-alt.svg';
-  private nameImgURL: string = '';
+
+  private categories: string[] = [];
+
+  private description = '';
+
+  private isFormValid = true;
+
+  private title = '';
+
+  private image = '';
+
+  // private imageUrl: string = 'https://cdn.vuetifyjs.com/images/logos/v-alt.svg';
+  private nameImgURL = '';
+
+  private user!: User;
+
   private getTitleRules = [
     (title: string) => !!title || 'Title is required',
     (title: string) => title.length < 20 || 'Title must have less 20 characters',
   ];
+
   private getImageRules = [(img: string) => !!img || 'Image is required'];
+
   private getDescRules = [
     (desc: string) => !!desc || 'Description is required',
     (desc: string) => desc.length <= 200 || 'Description at least less 200 characters',
   ];
+
   private getCategoriesRules = [(categories: string) => categories.length >= 1 || 'At least one category is required'];
+
   @Getter('GET_LOADING_POST', { namespace })
   private loading!: void;
 
+  @Action('ACT_ADD_POST', { namespace })
+  private addPost!: (addPost: AddPost) => Promise<Post>;
+
+  @Ref()
+  private readonly form!: HTMLFormElement;
+
   // ////////
 
-  private handleAddPost(): void {
+  // private updated() {
+  //   debugger
+  //   this.image === '' ? this.imageUrl = '/no_img.jpg' : this.imageUrl = this.image;
+  // }
 
-    const obj = {
-      item: this.item,
+  private handleAddPost(): void {
+    const addPost: AddPost = {
+      categories: this.categories,
       description: this.description,
-      isFormValid: this.isFormValid,
       title: this.title,
-      image: this.image,
-      imageURL: this.imageURL,
-      nameImgURL: this.nameImgURL,
+      imageUrl: this.image,
+      // eslint-disable-next-line no-underscore-dangle
+      creatorID: this.user._id,
     };
 
-    console.log(obj);
+    if (this.form.validate()) {
+      console.log(addPost);
 
+      this.addPost(addPost).then(() => {
+        this.$router.push({ path: '/' });
+      });
+    }
   }
 }
 </script>

@@ -7,33 +7,32 @@
 </template>
 
 <script lang="ts">
-import { Vue, Component, Prop, Emit, Watch } from 'vue-property-decorator';
-import { Getter, namespace } from 'vuex-class';
-import { User } from '@/store/types';
-import { from } from 'rxjs';
-import { Subscription } from 'apollo-client/util/Observable';
-import { Observable } from 'apollo-link';
+import {
+  Vue, Component, Prop, Watch,
+} from 'vue-property-decorator';
+import { User } from '../../store/types';
 
 @Component({
-    name: 'Snackbar',
+  name: 'Snackbar',
 })
 export default class SanckBarComponent extends Vue {
     @Prop({ required: false, default: false })
     public readonly isUser!: User;
-    private showing: boolean = false;
-    private subscription$!: Subscription;
+
+    private showing = false;
 
     @Watch('isUser')
     private onUserChanged(val: User, oldVal: User) {
-        if ((val !== null && val.username !== '') && (oldVal !== null && oldVal.username !== val.username)) {
-            this.showing = true;
-        }
+      if ((val !== null && val.username !== '') && (oldVal !== null && oldVal.username !== val.username)) {
+        this.showing = true;
+      }
     }
+
     private get onUser() {
-        if (this.isUser !== null || (this.isUser as User).username === '') {
-            this.showing = true;
-        }
-        return this.isUser;
+      if (this.isUser !== null || (this.isUser as User).username === '') {
+        this.showing = true;
+      }
+      return this.isUser;
     }
 }
 </script>

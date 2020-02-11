@@ -1,3 +1,5 @@
+/* eslint-disable import/no-cycle */
+/* eslint-disable no-restricted-syntax */
 // tslint:disable: no-console
 import Vue from 'vue';
 import ApolloClient, { Operation } from 'apollo-boost';
@@ -12,7 +14,6 @@ export const defaultClient = new ApolloClient({
     credentials: 'include',
   },
   request: (operation: Operation) => {
-
     // if no token in localStorage, add it
     if (!localStorage.token) {
       localStorage.setItem('token', '');

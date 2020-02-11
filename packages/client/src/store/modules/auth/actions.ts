@@ -1,14 +1,11 @@
-import Vue from 'vue';
+/* eslint-disable import/no-cycle */
 import { ActionContext, ActionTree } from 'vuex';
-import { AuthState, QueryGetAuth } from './types';
-import { RootState } from '@/store/types';
-
 import { defaultClient as apolloClient } from '@/plugins/graphql';
+import { router } from '@/router';
+import { RootState } from '@/store/types';
 import gqlSignInUser from '@/components/Auth/queries/SignInUser.graphql';
 import gqlSignUpUser from '@/components/Auth/queries/SignUpUser.graphql';
-import { SignInUser } from './types';
-import { router } from '@/router';
-import { User } from '../../types';
+import { AuthState, SignInUser } from './types';
 
 
 type AuthActionContext = ActionContext<AuthState, RootState>;
@@ -16,17 +13,18 @@ type AuthActionTree = ActionTree<AuthState, RootState>;
 
 export const actions: AuthActionTree = {
   // Se puede usar sin el async/await
-  async ACT_SIGN_IN_USER(context: AuthActionContext, payload: SignInUser): Promise<any> {
+  ACT_SIGN_IN_USER(context: AuthActionContext,
+    payload: SignInUser): Promise<boolean | Error> {
+    // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve, reject) => {
       try {
         // context.commit('startProcessing', null, { root: true });
         context.commit('SET_LOADING_BTN', true);
         // Use ApolloCLient to fire getPosts query
-        const { data, errors } =
-          await apolloClient.mutate({
-            mutation: gqlSignInUser,
-            variables: payload,
-          });
+        const { data, errors } = await apolloClient.mutate({
+          mutation: gqlSignInUser,
+          variables: payload,
+        });
         if (!errors) {
           context.commit('SET_TOKEN', data.signInUser.token);
           // await context.dispatch('currentUser', null, { root: true });
@@ -40,22 +38,23 @@ export const actions: AuthActionTree = {
         // tslint:disable-next-line:no-console
         console.error(e);
         context.commit('setError', e, { root: true });
-        reject(false);
+        reject(e);
       } finally {
         context.commit('SET_LOADING_BTN', false);
       }
     });
   },
-  async ACT_SIGN_OUT(context: AuthActionContext, payload: any): Promise<any> {
+  async ACT_SIGN_OUT(context: AuthActionContext): Promise<void> {
     // clear user in the state
-    const clearUser: User = {
-      username: '',
-      avatar: '',
-      email: '',
-      favorites: [],
-      joinDate: '',
-      password: '',
-    };
+    // const clearUser: User = {
+    //   _id: '',
+    //   username: '',
+    //   avatar: '',
+    //   email: '',
+    //   favorites: [],
+    //   joinDate: '',
+    //   password: '',
+    // };
     context.commit('setCurrentUser', null, { root: true });
     // remove the token in localStorage
     localStorage.setItem('token', '');
@@ -66,24 +65,16 @@ export const actions: AuthActionTree = {
     router.push({ path: '/' });
     // router.go(0);
   },
-  async ACT_SIGN_UP_USER(context: AuthActionContext, payload: SignInUser): Promise<any> {
+  async ACT_SIGN_UP_USER(context: AuthActionContext, payload: SignInUser): Promise<void> {
     try {
       context.commit('startProcessing', null, { root: true });
       context.commit('SET_LOADING_BTN', true);
       // Use ApolloCLient to fire getPosts query
-      const { data, errors } =
-        await apolloClient.mutate({
-          mutation: gqlSignUpUser,
-          variables: payload,
-        });
+      const { data, errors } = await apolloClient.mutate({
+        mutation: gqlSignUpUser,
+        variables: payload,
+      });
       if (!errors) {
-        // if (true) {
-        //   const data = {
-        //     signInUser: {
-        // tslint:disable-next-line:max-line-length
-        //       token: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImRpb25pIiwiZW1haWwiOiJkaW9uaUBxd2VydHkuY29tIiwiaWF0IjoxNTgwODQ5NDk4LCJleHAiOjE1ODA4NTMwOTh9.4JrTkcKBvVyKA6SkUEqig9Ol66U8EkokKuUk1KmQfng',
-        //     },
-        //   };
         context.commit('SET_TOKEN', data.signUpUser.token);
         // to make sure created method is run in main.js (we run getCurrentUser), reload the page
         // TODO esto es una chapuza, buscar otra solucion

@@ -1,8 +1,9 @@
+/* eslint-disable import/no-cycle */
 import Vue from 'vue';
 import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
-import AddPost from '@/components/Post/AddPost.vue';
 import { AuthGuard } from './AuthGuard';
+import AddPostComponent from '../components/Post/AddPost.vue';
 
 Vue.use(VueRouter);
 
@@ -18,9 +19,16 @@ const routes = [
     component: () => import(/* webpackChunkName: "posts" */ '../components/Post/Posts.vue'),
   },
   {
+    path: '/post/:postId',
+    name: 'post',
+    component: () => import(/* webpackChunkName: "posts" */ '../components/Post/Post.vue'),
+    props: true,
+  },
+  {
     path: '/posts/add',
     name: 'addPost',
-    component: AddPost,
+    component: AddPostComponent,
+    // beforeEnter: AuthGuard,
   },
   {
     path: '/profile',

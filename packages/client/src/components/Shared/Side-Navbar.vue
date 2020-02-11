@@ -33,21 +33,28 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue, Prop, PropSync, Emit } from 'vue-property-decorator';
-import { Getter } from 'vuex-class';
+/* eslint-disable @typescript-eslint/no-empty-function */
+import {
+  Component, Vue, Prop, PropSync, Emit,
+} from 'vue-property-decorator';
 import { User } from '../../store/types';
 
 @Component({
-    name: 'SideNavbar',
+  name: 'SideNavbar',
 })
 export default class SideNavbar extends Vue {
     @PropSync('sideNavbar', { required: true, type: Boolean }) public readonly sideNavbarBoolean!: boolean;
+
     @Prop({ required: true, type: Function }) public readonly toogleSideNavbar!: boolean;
+
     @Prop({ required: false, default: false }) public readonly isUser!: User;
-    @Prop({ type: Array }) public readonly sideNavItems!: any;
+
+    @Prop({ type: Array }) public readonly sideNavItems!: string[];
+
     @Emit('handleSignOutUser')
-    private handleSignOutUser() {
-      return;
-    }
+    // eslint-disable-next-line class-methods-use-this
+    // eslint-disable-next-line no-empty-function
+    // eslint-disable-next-line class-methods-use-this
+    private handleSignOutUser() {}
 }
 </script>
