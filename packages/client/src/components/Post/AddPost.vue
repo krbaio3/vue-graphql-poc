@@ -41,7 +41,7 @@
           <!-- Img Preview -->
           <v-layout row wrap>
             <v-flex xs12>
-              <img :src="imageURL" :alt="nameImgURL" height="300px" />
+              <img :src="imageUrl" :alt="nameImgURL" height="300px" />
             </v-flex>
           </v-layout>
           <!-- Categories Select -->
@@ -50,7 +50,7 @@
               <v-select
                 :items="itemList"
                 :rules="getCategoriesRules"
-                v-model="item"
+                v-model="categories"
                 multiple
                 label="Categories"
               ></v-select>
@@ -61,7 +61,7 @@
               <v-textarea
                 :rules="getDescRules"
                 v-model="description"
-                label="Post Tilte"
+                label="Description"
                 type="text"
                 required
               ></v-textarea>
@@ -89,25 +89,33 @@
 <script lang="ts">
 
 
-import { Vue, Component } from 'vue-property-decorator';
+
+
+import { Vue, Component, Ref } from 'vue-property-decorator';
 import { gql } from 'apollo-boost';
-import { Getter } from 'vuex-class';
+import { Getter, Action } from 'vuex-class';
+import { mapGetters } from 'vuex';
+import { User } from '../../store/types';
 
 const namespace = 'postsModule';
 
 @Component({
   name: 'AddPost',
+  computed: {
+    ...mapGetters({user: 'getCurrentUser'})
+  }
 })
 export default class AddPost extends Vue {
   private getPosts = {};
   private itemList: string[] = ['Art', 'Education', 'Travel', 'Photography', 'Technology'];
-  private item: string = '';
+  private categories: string[] = [];
   private description: string = '';
   private isFormValid: boolean = true;
   private title: string = '';
   private image: string = '';
-  private imageURL: string = 'https://cdn.vuetifyjs.com/images/logos/v-alt.svg';
+  private imageUrl: string = 'https://cdn.vuetifyjs.com/images/logos/v-alt.svg';
   private nameImgURL: string = '';
+  private user!: User;
   private getTitleRules = [
     (title: string) => !!title || 'Title is required',
     (title: string) => title.length < 20 || 'Title must have less 20 characters',
@@ -120,22 +128,29 @@ export default class AddPost extends Vue {
   private getCategoriesRules = [(categories: string) => categories.length >= 1 || 'At least one category is required'];
   @Getter('GET_LOADING_POST', { namespace })
   private loading!: void;
+  @Action('ACT_ADD_POST', {namespace})
+  private addPost!: () => void;
+  @Ref()
+  private readonly form!: HTMLFormElement;
 
   // ////////
 
   private handleAddPost(): void {
 
     const obj = {
-      item: this.item,
+      item: this.categories,
       description: this.description,
-      isFormValid: this.isFormValid,
       title: this.title,
       image: this.image,
-      imageURL: this.imageURL,
-      nameImgURL: this.nameImgURL,
+      imageUrl: this.imageUrl,
+      creatorID: this.user._id,
     };
 
-    console.log(obj);
+    if (this.form.validate()) {
+      console.log(obj)
+      debugger
+      this.addPost();
+    }
 
   }
 }

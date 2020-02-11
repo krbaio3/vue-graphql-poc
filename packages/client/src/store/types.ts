@@ -11,7 +11,7 @@ export interface ErrorObject {
 
 export interface User {
   // __typename: string;
-  // _id: string;
+  _id: string;
   avatar: string;
   email: string;
   favorites: string[];

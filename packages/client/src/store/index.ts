@@ -21,7 +21,7 @@ const rootStore: StoreOptions<RootState> = {
     user: {
       username: '',
       // __typename: '',
-      // _id: '',
+      _id: '',
       avatar: '',
       email: '',
       favorites: [],

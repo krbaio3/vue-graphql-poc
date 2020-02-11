@@ -49,6 +49,7 @@ export const actions: AuthActionTree = {
   async ACT_SIGN_OUT(context: AuthActionContext, payload: any): Promise<any> {
     // clear user in the state
     const clearUser: User = {
+      _id: '',
       username: '',
       avatar: '',
       email: '',

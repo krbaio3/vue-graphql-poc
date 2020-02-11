@@ -19,6 +19,15 @@ export interface QueryGetPosts {
   getPosts: Post[];
 }
 
+export interface AddPost {
+  item: string;
+  description: string;
+  title: string;
+  image: string;
+  imageURL: string;
+  nameImgURL: string;
+}
+
 export const POSTS_TYPES = {
   mutations: {
     SETPOSTS: 'SETPOSTS',
@@ -28,6 +37,6 @@ export const POSTS_TYPES = {
     GET_LOADING_POST: 'GET_LOADING_POST',
   },
   actions: {
-    ACTPOSTS: 'ACTPOSTS',
+    ACT_POSTS: 'ACT_POSTS',
   },
 };
