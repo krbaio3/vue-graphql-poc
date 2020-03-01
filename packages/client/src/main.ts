@@ -5,6 +5,8 @@ import { store } from './store';
 import vuetify from './plugins/vuetify';
 import { apolloProvider } from './plugins/graphql';
 import '@/plugins/vue-rx';
+import '@/utils/date.filter';
+// import '@/utils/infiniteScroll';
 
 Vue.config.productionTip = false;
 

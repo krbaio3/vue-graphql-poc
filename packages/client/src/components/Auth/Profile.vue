@@ -5,16 +5,16 @@
 </template>
 
 <script lang="ts">
-  import {Component, Vue} from 'vue-property-decorator';
+import { Component, Vue } from 'vue-property-decorator';
 
-  // Component.registerHooks([
-  //   'beforeRouteEnter',
-  // ]);
+// Component.registerHooks([
+//   'beforeRouteEnter',
+// ]);
 
   @Component({
     name: 'Profile',
   })
-  export default class Profile extends Vue {}
+export default class Profile extends Vue {}
 
 </script>
 

@@ -35,7 +35,7 @@ const PostSchema = new Schema({
         required: true,
         ref: 'User'
     },
-    message: [{
+    messages: [{
         messageBody: {
             type: String,
             required: true,
@@ -51,5 +51,10 @@ const PostSchema = new Schema({
         }
     }]
 })
+
+// Create index to search on all fields of posts
+PostSchema.index({
+    '$**': 'text'
+});
 
 module.exports = model('Post', PostSchema);

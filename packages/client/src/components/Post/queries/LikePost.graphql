@@ -1,0 +1,12 @@
+mutation($postId: ID!, $username: String!) {
+  likePost(postId: $postId, username: $username) {
+    likes
+    favorites {
+      _id
+      title
+      categories
+      imageUrl
+      description
+    }
+  }
+}

@@ -20,17 +20,18 @@ export interface QueryGetPosts {
 }
 
 export interface AddPost {
-  item: string;
+  categories: string[];
   description: string;
   title: string;
-  image: string;
-  imageURL: string;
-  nameImgURL: string;
+  // image: string;
+  imageUrl: string;
+  // nameImgURL: string;
+  creatorID: string;
 }
 
 export const POSTS_TYPES = {
   mutations: {
-    SETPOSTS: 'SETPOSTS',
+    SET_POSTS: 'SET_POSTS',
   },
   getters: {
     GET_POST: 'GET_POSTS',

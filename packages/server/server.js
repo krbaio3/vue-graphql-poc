@@ -42,6 +42,7 @@ connect(process.env.MONGO_URI, {
   .then(() => console.log('DB connected'))
   .catch((err) => console.error(err));
 set('useCreateIndex', true);
+set('useFindAndModify', false);
 
 // Added check for DB connection
 !connection

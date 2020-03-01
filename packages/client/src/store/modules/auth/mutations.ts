@@ -1,4 +1,3 @@
-import Vue from 'vue';
 import { MutationTree } from 'vuex';
 import { AuthState } from './types';
 

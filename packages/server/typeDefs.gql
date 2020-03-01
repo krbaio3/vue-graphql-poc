@@ -39,6 +39,9 @@ type Mutation {
     description: String!
     creatorID: ID!
   ): Post!
+  addPostMessage(messageBody: String!, user: ID!, postId: ID!):Message!
+  likePost(postId: ID!, username: String!): LikesFavor!
+  unlikePost(postId: ID!, username: String!): LikesFavor!
   signInUser(username: String!, password: String!): Token!
   signUpUser(username: String!, email: String!, password: String!): Token!
 }
@@ -46,6 +49,20 @@ type Mutation {
 type Query {
   getUser(username: String): User
   getPosts: [Post]
+  getPost(postId: ID!): Post
   getAllUser: [User]
   getCurrentUser: User
+  infiniteScrollPosts(pageNum: Int!, pageSize: Int!): PostsPage
+  searchPost(searchTerm: String): [Post]
+}
+
+type PostsPage {
+  posts: [Post]
+  hasMore: Boolean
+}
+
+type LikesFavor {
+  # likes for Post / Favorites for User
+  likes: Int
+  favorites: [Post]
 }

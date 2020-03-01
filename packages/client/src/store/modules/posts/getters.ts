@@ -6,7 +6,7 @@ type PostsGetter = GetterTree<PostsState, RootState>;
 
 export const getters: PostsGetter = {
   GET_POST(state: PostsState): Post[] {
-    const {posts} = state;
+    const { posts } = state;
     return posts;
   },
   GET_LOADING_POST(state: PostsState): boolean {

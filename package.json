@@ -1,61 +1,59 @@
 {
-  "name": "vue-graphql",
-  "version": "0.1.0",
-  "private": true,
-  "description": "POC vueJS with graphQL",
-  "keywords": [
-    "vue",
-    "graphql"
-  ],
-  "homepage": "https://github.com/krbaio3/vue-graphql-poc#readme",
-  "bugs": {
-    "url": "https://github.com/krbaio3/vue-graphql-poc/issues"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/krbaio3/vue-graphql-poc.git"
-  },
-  "license": "MIT",
-  "author": "J. KrBaIO3 <krbaio3@gmail.com>",
-  "main": "main.js",
-  "workspaces": [
-    "packages/*"
-  ],
-  "scripts": {
-    "client": "yarn workspace @vue-graphql/client serve",
-    "client:lint": "yarn workspace @vue-graphql/client lint --fix",
-    "server": "yarn workspace @vue-graphql/server server",
-    "dev": "concurrently --kill-others-on-fail --names \"SERVER,CLIENT\" -c \"black.bgCyan.bold,yellow.bgRed.bold\" \"yarn server\"  \"yarn client\"",
-    "test": "test"
-  },
-  "dependencies": {
-    "concurrently": "^5.0.2",
-    "graphql": "^14.5.8"
-  },
-  "devDependencies": {
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb": "^18.0.1",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-config-prettier": "^6.10.0",
-    "eslint-plugin-import": "^2.20.1",
-    "eslint-plugin-prettier": "^3.1.2",
-    "prettier": "^1.19.1"
-  },
-  "engines": {
-    "node": ">=8.10.0",
-    "yarn": "1.x"
-  },
-  "gitHooks": {
-    "pre-commit": "lint-staged"
-  },
-  "lint-staged": {
-    "*.ts": [
-      "yarn client:lint",
-      "git add"
-    ],
-    "*.vue": [
-      "yarn client:lint",
-      "git add"
-    ]
-  }
+ "name": "vue-graphql",
+ "version": "0.1.0",
+ "private": true,
+ "description": "POC vueJS with graphQL",
+ "keywords": [
+  "vue",
+  "graphql"
+ ],
+ "homepage": "https://github.com/krbaio3/vue-graphql-poc#readme",
+ "bugs": {
+  "url": "https://github.com/krbaio3/vue-graphql-poc/issues"
+ },
+ "repository": {
+  "type": "git",
+  "url": "git+ssh://git@github.com/krbaio3/vue-graphql-poc.git"
+ },
+ "license": "MIT",
+ "author": "J. KrBaIO3 <krbaio3@gmail.com>",
+ "main": "main.js",
+ "workspaces": [
+  "packages/*"
+ ],
+ "scripts": {
+  "client": "yarn workspace @vue-graphql/client serve",
+  "client:lint": "yarn workspace @vue-graphql/client lint --fix",
+  "server": "yarn workspace @vue-graphql/server server",
+  "dev": "concurrently --kill-others-on-fail --names \"SERVER,CLIENT\" -c \"black.bgCyan.bold,yellow.bgRed.bold\" \"yarn server\"  \"yarn client\"",
+  "test": "test"
+ },
+ "dependencies": {
+  "concurrently": "^5.0.2",
+  "graphql": "^14.5.8"
+ },
+ "devDependencies": {
+  "@vue/eslint-config-airbnb": "^5.0.2",
+  "@vue/eslint-config-typescript": "^5.0.1",
+  "eslint": "^6.8.0",
+  "eslint-config-airbnb": "^18.0.1",
+  "eslint-config-prettier": "^6.10.0",
+  "eslint-plugin-import": "^2.20.1",
+  "eslint-plugin-prettier": "^3.1.2",
+  "eslint-plugin-vue": "^6.1.2",
+  "prettier": "^1.19.1"
+ },
+ "engines": {
+  "node": ">=8.10.0",
+  "yarn": "1.x"
+ },
+ "gitHooks": {
+  "pre-commit": "lint-staged"
+ },
+ "lint-staged": {
+  "./packages/client/*.{js,jsx,vue,ts,tsx}": [
+   "yarn client:lint",
+   "git add"
+  ]
+ }
 }

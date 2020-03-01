@@ -1,13 +1,14 @@
-// tslint:disable: no-console
+/* eslint-disable import/no-cycle */
 import Vue from 'vue';
-import Vuex, { StoreOptions, ActionContext } from 'vuex';
-import { RootState, ErrorObject, User } from './types';
-import { postsModule } from './modules/posts';
-// import { todoModule } from './modules/todo/index';
-import { vuexPersistence } from '@/plugins/vuex-persist';
-import { authModule } from './modules/auth/index';
+import Vuex, { StoreOptions } from 'vuex';
 import { defaultClient as apolloClient } from '@/plugins/graphql';
+import { postsModule } from '@/store/modules/posts';
+import { authModule } from '@/store/modules/auth';
+import { vuexPersistence } from '@/plugins/vuex-persist';
 import gqlGetCurrentUser from '@/queries/GetCurrentUser.graphql';
+import { RootState, ErrorObject, User } from '@/store/types';
+// import { todoModule } from './modules/todo/index';
+import { Post } from './modules/posts/types';
 
 Vue.use(Vuex);
 
@@ -32,7 +33,8 @@ const rootStore: StoreOptions<RootState> = {
   getters: {
     processing: (state: RootState) => state.processing,
     getError: (state: RootState) => state.error,
-    getCurrentUser: (state: RootState) => state.user,
+    getCurrentUser: (state: RootState): User => state.user,
+    getUserFavorites: (state: RootState): Post[] => state.user && state.user.favorites,
   },
   mutations: {
     startProcessing(state: RootState) {

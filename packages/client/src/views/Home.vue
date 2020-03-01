@@ -2,7 +2,8 @@
     <v-container class="mt-6 text-center">
         <v-flex xs12>
             <v-carousel v-if="getPosts.length > 0" v-bind="{'cycle': true}" interval="3000">
-                <v-carousel-item v-for="(post) in getPosts" :key="post._id" :src="post.imageUrl">
+                <v-carousel-item v-for="(post) in getPosts" :key="post._id" :src="post.imageUrl"
+                  @click.native="goToPost(post._id)">
                     <h1 id="carousel__title">{{post.title}}</h1>
                 </v-carousel-item>
             </v-carousel>
@@ -12,18 +13,18 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import { gql } from 'apollo-boost';
 import { Action, Getter } from 'vuex-class';
-import { Post, POSTS_TYPES } from '../store/modules/posts/types';
+import { Post } from '../store/modules/posts/types';
 
-const namespace: string = 'postsModule';
+const namespace = 'postsModule';
 
 @Component({
-    name: 'Home',
+  name: 'Home',
 })
 export default class AddPost extends Vue {
     @Action('ACT_POST', { namespace })
     public handleGetCarouselPost!: () => void;
+
     @Getter('GET_POST', { namespace })
     public handleGetPosts!: Post[];
     // private getPosts = {};
@@ -32,12 +33,16 @@ export default class AddPost extends Vue {
     // reach out to Vuex store, fire action that gets posts for carousel
     // }
 
+    private goToPost(id: string) {
+      this.$router.push({ path: `/post/${id}` });
+    }
+
     public get getPosts() {
-        return this.handleGetPosts;
+      return this.handleGetPosts;
     }
 
     private created() {
-        this.handleGetCarouselPost();
+      this.handleGetCarouselPost();
     }
 }
 </script>

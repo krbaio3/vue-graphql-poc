@@ -1,3 +1,5 @@
+import { Post } from './modules/posts/types';
+
 export interface RootState {
   processing: boolean;
   error: ErrorObject;
@@ -14,7 +16,7 @@ export interface User {
   _id: string;
   avatar: string;
   email: string;
-  favorites: string[];
+  favorites: Post[];
   joinDate: string;
   password: string;
   username: string;
