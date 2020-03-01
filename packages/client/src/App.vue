@@ -25,7 +25,8 @@
             </v-toolbar-title>
             <v-spacer></v-spacer>
             <!-- Search Input -->
-            <v-text-field name="search" label="label" id="search" placeholder="Search Post"
+            <v-text-field v-model="searchTerm" @input="triggerSearchPosts" name="search"
+                          label="label" id="search" placeholder="Search Post"
                           flex prepend-icon="mdi-magnify"
                           color="accent" single-line hide-details></v-text-field>
             <v-spacer></v-spacer>
@@ -120,11 +121,16 @@ export default class App extends Vue {
     public badgeAnimated = false;
 
     public user!: User;
+
+    public searchTerm = '';
     // public userOb$ = new BehaviorSubject<any>(this.$store.state.user);
     // public user$!: Observable<User>;
 
     @Action('ACT_SIGN_OUT', { namespace: 'authModule' })
     private handleSignOutUser!: () => Promise <void> ;
+
+    @Action('ACT_SEARCH_POST', { namespace: 'postModule' })
+    private handleSearchPost!: (searchTerm: string) => Promise <Post[] | ''>;
 
     @Watch('userFavorites')
     private OnUserFavorites(value: Post[]) {
@@ -182,6 +188,10 @@ export default class App extends Vue {
           this.sideNavbar = false;
         }
       });
+    }
+
+    private triggerSearchPosts() {
+      this.handleSearchPost(this.searchTerm);
     }
 
     // // Computed

@@ -9,6 +9,7 @@ import { defaultClient as apolloClient } from '@/plugins/graphql';
 import { ApolloQueryResult } from 'apollo-boost';
 import gqlGetPost from '@/components/Post/queries/GetPosts.graphql';
 import gqlAddPost from '@/components/Post/queries/AddPosts.graphql';
+import gqlSearchPost from '@/components/Post/queries/SearchPost.graphql';
 import { GraphQLError } from 'graphql';
 import {
   PostsState, QueryGetPosts, AddPost, Post,
@@ -38,11 +39,33 @@ export const actions: PostsActionTree = {
       context.commit('stopProcessing', null, { root: true });
     }
   },
+  ACT_SEARCH_POST(context: PostsActionContext, payload: string): Promise<Post[] | ''> {
+    return new Promise<Post[] | ''>((resolve, reject) => {
+      try {
+        context.commit('startProcessing', null, { root: true });
+        apolloClient.query({
+          query: gqlSearchPost,
+          variables: payload,
+        }).then(({ data }) => resolve(data))
+          .catch((error: GraphQLError) => {
+            console.error(error);
+            context.commit('setError', error, { root: true });
+            reject(error);
+          });
+      } catch (error) {
+        console.error(error);
+        context.commit('setError', error, { root: true });
+        reject(error);
+      } finally {
+        context.commit('stopProcessing', null, { root: true });
+      }
+    });
+  },
   ACT_LOADING_POST(context: PostsActionContext, payload: boolean): void {
     context.commit('SET_LOADING_POST', payload);
   },
   ACT_ADD_POST(context: PostsActionContext, payload: AddPost): Promise<Post | GraphQLError> {
-    return new Promise<Post| GraphQLError>(async (resolve, reject) => {
+    return new Promise<Post | GraphQLError>(async (resolve, reject) => {
       try {
         context.commit('startProcessing', null, { root: true });
         context.dispatch('ACT_LOADING_POST', true);

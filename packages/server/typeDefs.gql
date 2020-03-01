@@ -53,6 +53,7 @@ type Query {
   getAllUser: [User]
   getCurrentUser: User
   infiniteScrollPosts(pageNum: Int!, pageSize: Int!): PostsPage
+  searchPost(searchTerm: String): [Post]
 }
 
 type PostsPage {
