@@ -222,9 +222,7 @@ export default class App extends Vue {
 
     private triggerSearchPosts() {
       if (this.searchTerm !== '') {
-        this.handleSearchPost(this.searchTerm).then((data) => {
-          console.log(data);
-        });
+        this.handleSearchPost(this.searchTerm);
       }
     }
 
