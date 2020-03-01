@@ -13,4 +13,8 @@ export const getters: PostsGetter = {
     const { loading } = state;
     return loading;
   },
+  GET_SEARCH_RESULTS(state: PostsState): Post [] | [] {
+    const { postResults } = state;
+    return postResults;
+  },
 };

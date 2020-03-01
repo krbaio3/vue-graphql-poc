@@ -101,7 +101,7 @@ import { User } from '../../store/types';
 import { AddPost, Post } from '../../store/modules/posts/types';
 
 
-const namespace = 'postsModule';
+const namespace = 'postModule';
 
 @Component({
   name: 'AddPost',

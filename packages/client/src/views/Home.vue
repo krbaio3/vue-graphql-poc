@@ -16,7 +16,7 @@ import { Component, Vue } from 'vue-property-decorator';
 import { Action, Getter } from 'vuex-class';
 import { Post } from '../store/modules/posts/types';
 
-const namespace = 'postsModule';
+const namespace = 'postModule';
 
 @Component({
   name: 'Home',

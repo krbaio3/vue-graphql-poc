@@ -41,12 +41,16 @@ export const actions: PostsActionTree = {
   },
   ACT_SEARCH_POST(context: PostsActionContext, payload: string): Promise<Post[] | ''> {
     return new Promise<Post[] | ''>((resolve, reject) => {
+      const variables = { searchTerm: payload };
       try {
         context.commit('startProcessing', null, { root: true });
         apolloClient.query({
           query: gqlSearchPost,
-          variables: payload,
-        }).then(({ data }) => resolve(data))
+          variables,
+        }).then(({ data }) => {
+          context.commit('SET_SEARCH_RESULTS', data.searchPost);
+          resolve(data.searchPost);
+        })
           .catch((error: GraphQLError) => {
             console.error(error);
             context.commit('setError', error, { root: true });
@@ -60,6 +64,9 @@ export const actions: PostsActionTree = {
         context.commit('stopProcessing', null, { root: true });
       }
     });
+  },
+  ACT_CLEAR_SEARCH_POST(context: PostsActionContext) {
+    context.commit('SET_CLEAR_SEARCH_RESULTS');
   },
   ACT_LOADING_POST(context: PostsActionContext, payload: boolean): void {
     context.commit('SET_LOADING_POST', payload);

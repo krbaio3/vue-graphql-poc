@@ -11,7 +11,7 @@ const namespaced = true;
 
 type PostModule = Module<PostsState, RootState>;
 
-export const postsModule: PostModule = {
+export const postModule: PostModule = {
   namespaced,
   getters,
   mutations,

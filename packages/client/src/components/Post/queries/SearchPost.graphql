@@ -1,5 +1,5 @@
 query($searchTerm: String) {
-  searchPost(seachTerm: $searchTerm) {
+  searchPost(searchTerm: $searchTerm) {
     _id
     title
     imageUrl

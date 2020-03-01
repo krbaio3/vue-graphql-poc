@@ -1,6 +1,7 @@
 export interface PostsState {
   posts: Post[];
   loading: boolean;
+  postResults: Post[] | [];
 }
 
 export interface Post {

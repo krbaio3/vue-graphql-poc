@@ -29,6 +29,27 @@
                           label="label" id="search" placeholder="Search Post"
                           flex prepend-icon="mdi-magnify"
                           color="accent" single-line hide-details></v-text-field>
+
+            <!-- Search Result Cards -->
+            <v-card dark v-if="getSearchResults.length" id="search__card">
+              <v-list>
+                <v-list-item v-for="(result) in getSearchResults" :key="result._id"
+                  @click="goToSearchResult(result._id)" style="cursor:pointer;">
+                  <v-list-item-title>
+                    {{result.title}} -
+                    <span class="font-weight-thin">
+                      {{ fDescription(result.description) }}
+                    </span>
+                  </v-list-item-title>
+
+                  <!-- Show Icon if Result Favorited by User -->
+                  <v-list-item-action v-if="checkIfUserFavorite(result._id)">
+                    <v-icon>mdi-cards-heart</v-icon>
+                  </v-list-item-action>
+                </v-list-item>
+              </v-list>
+            </v-card>
+
             <v-spacer></v-spacer>
             <!-- Horizontal NavBar Links -->
             <v-toolbar-items class="hidden-xs-only">
@@ -70,6 +91,8 @@
 </template>
 
 <script lang="ts">
+
+
 /* eslint-disable import/no-unresolved */
 /* eslint-disable import/extensions */
 import { Component, Vue, Watch } from 'vue-property-decorator';
@@ -78,8 +101,9 @@ import SnackbarComponent from '@/components/Shared/Snackbar.vue';
 import { Action } from 'vuex-class';
 import { mapGetters } from 'vuex';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { ErrorObject, User } from './store/types';
-import { store } from './store';
+import { ErrorObject, User } from '@/store/types';
+import { store } from '@/store';
+import { formatDescription } from './utils/helpers';
 import { Post } from './store/modules/posts/types';
 
 // TODO falta al final de la HU48 poner un wacher para que el
@@ -100,6 +124,7 @@ import { Post } from './store/modules/posts/types';
       processing: 'processing',
       user: 'getCurrentUser',
       userFavorites: 'getUserFavorites',
+      getSearchResults: 'postModule/GET_SEARCH_RESULTS',
     }),
   },
   subscriptions() {
@@ -122,6 +147,8 @@ export default class App extends Vue {
 
     public user!: User;
 
+    public userFavorites!: [];
+
     public searchTerm = '';
     // public userOb$ = new BehaviorSubject<any>(this.$store.state.user);
     // public user$!: Observable<User>;
@@ -131,6 +158,9 @@ export default class App extends Vue {
 
     @Action('ACT_SEARCH_POST', { namespace: 'postModule' })
     private handleSearchPost!: (searchTerm: string) => Promise <Post[] | ''>;
+
+    @Action('ACT_CLEAR_SEARCH_POST', { namespace: 'postModule' })
+    private handleSetSearchPost!: (searchTerm: string) => void;
 
     @Watch('userFavorites')
     private OnUserFavorites(value: Post[]) {
@@ -191,7 +221,11 @@ export default class App extends Vue {
     }
 
     private triggerSearchPosts() {
-      this.handleSearchPost(this.searchTerm);
+      if (this.searchTerm !== '') {
+        this.handleSearchPost(this.searchTerm).then((data) => {
+          console.log(data);
+        });
+      }
     }
 
     // // Computed
@@ -199,18 +233,27 @@ export default class App extends Vue {
       return this.$store.getters.getCurrentUser;
     }
 
-  // private set userFavorites(value) {
-  //   if (value) {
-  //     this.badgeAnimated = true;
-  //     setTimeout(() => {
-  //       this.badgeAnimated = false;
-  //     }, 1000);
-  //   }
-  // }
+    private goToSearchResult(id: string) {
+      this.searchTerm = '';
+      this.$router.push({ path: `/post/${id}` });
+      this.handleSetSearchPost(this.searchTerm);
+    }
+
+    // eslint-disable-next-line class-methods-use-this
+    private fDescription(desc: string): string {
+      return formatDescription(desc);
+    }
+
+    private checkIfUserFavorite(id: string): boolean {
+      // eslint-disable-next-line no-underscore-dangle
+      return this.userFavorites && this.userFavorites.some((fav: Post) => fav._id === id);
+    }
 }
 </script>
 
 <style lang="scss" scoped>
+
+
 .blockUI {
     position: absolute; // background-color: rgba(168, 168, 168, 0.6);
 }
@@ -238,6 +281,15 @@ export default class App extends Vue {
 // user favorite animation
 .bounce {
   animation: bounce 1s both;
+}
+
+// search results card
+#search__card {
+  position: absolute;
+  width: 100vw;
+  z-index: 8;
+  top: 100%;
+  left: 0;
 }
 
 @keyframes bounce {

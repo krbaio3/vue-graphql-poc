@@ -2,7 +2,7 @@
 import Vue from 'vue';
 import Vuex, { StoreOptions } from 'vuex';
 import { defaultClient as apolloClient } from '@/plugins/graphql';
-import { postsModule } from '@/store/modules/posts';
+import { postModule } from '@/store/modules/posts';
 import { authModule } from '@/store/modules/auth';
 import { vuexPersistence } from '@/plugins/vuex-persist';
 import gqlGetCurrentUser from '@/queries/GetCurrentUser.graphql';
@@ -80,7 +80,7 @@ const rootStore: StoreOptions<RootState> = {
     },
   },
   modules: {
-    postsModule,
+    postModule,
     authModule,
   },
   plugins: [vuexPersistence.plugin],
