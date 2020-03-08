@@ -38,6 +38,12 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 [vuex-class mapper](https://github.com/vuejs/vue-class-component/issues/109).
 
-### D. Tecnica
+### D. Técnica
 
 - Revisar tratamiento de errores (mensaje a veces se pisa y posición)
+- Refresh token
+- Refactorizar Profile
+- Refactorizar PostForm
+- Loading centrado en responsive
+- Aviso de cookies
+- Incluir Librería Logger

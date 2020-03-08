@@ -27,17 +27,16 @@ export const defaultClient = new ApolloClient({
   },
   onError({ graphQLErrors, networkError }) {
     if (networkError) {
-      // tslint:disable-next-line: no-console
-      console.error('[networkError]', networkError);
+      (this as Vue).$log.error('[networkError]', networkError);
     }
     if (graphQLErrors) {
       for (const err of graphQLErrors) {
         if (err?.extensions?.code === 'UNAUTHENTICATED') {
           localStorage.setItem('token', '');
-          console.log('Hacer el redirect');
+          (this as Vue).$log.debug('Hacer el redirect');
         }
         // tslint:disable-next-line: no-console
-        console.dir(err);
+        // console.dir(err);
         if (err.name === 'AuthenticationError') {
           store.commit('setError', err, { root: true });
         }

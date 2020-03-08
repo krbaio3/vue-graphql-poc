@@ -17,4 +17,9 @@ export const mutations: PostMutationsTree = {
   SET_CLEAR_SEARCH_RESULTS(state: PostsState): void {
     state.postResults = [];
   },
+  SET_USER_POST(state: PostsState, payload): void {
+    state.userPost = payload;
+  },
+  // SET_DELETE_USER_POST(state: PostsState, payload: string): void {
+  // },
 };

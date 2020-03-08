@@ -69,7 +69,7 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
-import gqlInfiniteScrollPosts from './queries/infiniteScrollPosts.graphql';
+import gqlInfiniteScrollPosts from './queries/InfiniteScrollPosts.graphql';
 import { Post } from '../../store/modules/posts/types';
 
 const pageSize = 2;

@@ -253,8 +253,7 @@ export default class Posts extends Vue {
           },
         }).then(({ data }) => {
           this.form.reset();
-          console.log(data);
-        }).catch((error) => console.error(error));
+        }).catch((error) => this.$log.error(error));
       }
     }
 
@@ -287,7 +286,7 @@ export default class Posts extends Vue {
       }).then(({ data }) => {
         const updatedUser = { ...this.getCurrentUser, favorites: data.likePost.favorites };
         this.$store.commit('setCurrentUser', updatedUser);
-      }).catch((error) => console.error(error));
+      }).catch((error) => this.$log.error(error));
     }
 
     private handlerUnlikePost() {
@@ -319,7 +318,7 @@ export default class Posts extends Vue {
       }).then(({ data }) => {
         const updatedUser = { ...this.getCurrentUser, favorites: data.unlikePost.favorites };
         this.$store.commit('setCurrentUser', updatedUser);
-      }).catch((error) => console.error(error));
+      }).catch((error) => this.$log.error(error));
     }
 }
 </script>

@@ -51,7 +51,7 @@
   "pre-commit": "lint-staged"
  },
  "lint-staged": {
-  "./packages/client/*.{js,jsx,vue,ts,tsx}": [
+  "*.{vue,ts}": [
    "yarn client:lint",
    "git add"
   ]

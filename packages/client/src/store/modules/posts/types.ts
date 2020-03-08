@@ -2,6 +2,7 @@ export interface PostsState {
   posts: Post[];
   loading: boolean;
   postResults: Post[] | [];
+  userPost: Post[] | [];
 }
 
 export interface Post {
@@ -28,6 +29,10 @@ export interface AddPost {
   imageUrl: string;
   // nameImgURL: string;
   creatorID: string;
+}
+
+export interface MyPost extends Post {
+  userId: string;
 }
 
 export const POSTS_TYPES = {

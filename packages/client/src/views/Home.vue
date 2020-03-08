@@ -50,6 +50,7 @@ export default class AddPost extends Vue {
 <style lang="scss" scoped>
 #carousel__title {
     position: absolute;
+    cursor: pointer;
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     border-radius: 5px 5px 0 0;

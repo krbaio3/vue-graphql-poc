@@ -5,6 +5,7 @@ import { store } from './store';
 import vuetify from './plugins/vuetify';
 import { apolloProvider } from './plugins/graphql';
 import '@/plugins/vue-rx';
+import '@/plugins/vue-logger';
 import '@/utils/date.filter';
 // import '@/utils/infiniteScroll';
 

@@ -4,4 +4,5 @@ export const state: PostsState = {
   posts: [],
   loading: false,
   postResults: [],
+  userPost: [],
 };

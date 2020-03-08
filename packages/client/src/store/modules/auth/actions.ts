@@ -1,4 +1,5 @@
 /* eslint-disable import/no-cycle */
+import Vue from 'vue';
 import { ActionContext, ActionTree } from 'vuex';
 import { defaultClient as apolloClient } from '@/plugins/graphql';
 import { router } from '@/router';
@@ -36,7 +37,7 @@ export const actions: AuthActionTree = {
         }
       } catch (e) {
         // tslint:disable-next-line:no-console
-        console.error(e);
+        Vue.prototype.$log.error(e);
         context.commit('setError', e, { root: true });
         reject(e);
       } finally {
@@ -59,7 +60,6 @@ export const actions: AuthActionTree = {
     // remove the token in localStorage
     localStorage.setItem('token', '');
     // end Session
-    // console.dir(apolloClient);
     await apolloClient.resetStore();
     // redirect home - kick users out of private pages (i.e. profile)
     router.push({ path: '/' });
@@ -84,7 +84,7 @@ export const actions: AuthActionTree = {
       }
     } catch (e) {
       // tslint:disable-next-line:no-console
-      console.error(e);
+      Vue.prototype.$log.error(e);
       context.commit('setError', e, { root: true });
     } finally {
       context.commit('SET_LOADING_BTN', false);

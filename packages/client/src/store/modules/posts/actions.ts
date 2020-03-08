@@ -3,6 +3,7 @@
 /* eslint-disable no-async-promise-executor */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable import/no-cycle */
+import Vue from 'vue';
 import { ActionContext, ActionTree } from 'vuex';
 import { RootState } from '@/store/types';
 import { defaultClient as apolloClient } from '@/plugins/graphql';
@@ -10,9 +11,13 @@ import { ApolloQueryResult } from 'apollo-boost';
 import gqlGetPost from '@/components/Post/queries/GetPosts.graphql';
 import gqlAddPost from '@/components/Post/queries/AddPosts.graphql';
 import gqlSearchPost from '@/components/Post/queries/SearchPost.graphql';
+import gqlGetUserPost from '@/components/Post/queries/GetUserPost.graphql';
+import gqlUpdateUserPost from '@/components/Post/queries/UpdateUserPost.graphql';
+import gqlDeleteUserPost from '@/components/Post/queries/DeleteUserPost.graphql';
+import gqlInfiniteScrollPosts from '@/components/Post/queries/InfiniteScrollPosts.graphql';
 import { GraphQLError } from 'graphql';
 import {
-  PostsState, QueryGetPosts, AddPost, Post,
+  PostsState, QueryGetPosts, AddPost, Post, MyPost,
 } from './types';
 
 
@@ -33,7 +38,7 @@ export const actions: PostsActionTree = {
       }
     } catch (e) {
       // tslint:disable-next-line:no-console
-      console.error(e);
+      Vue.prototype.$log.error(e);
       // context.commit('setError', e, { root: true });
     } finally {
       context.commit('stopProcessing', null, { root: true });
@@ -52,12 +57,12 @@ export const actions: PostsActionTree = {
           resolve(data.searchPost);
         })
           .catch((error: GraphQLError) => {
-            console.error(error);
+            Vue.prototype.$log.error(error);
             context.commit('setError', error, { root: true });
             reject(error);
           });
       } catch (error) {
-        console.error(error);
+        Vue.prototype.$log.error(error);
         context.commit('setError', error, { root: true });
         reject(error);
       } finally {
@@ -83,11 +88,9 @@ export const actions: PostsActionTree = {
           // @ts-ignore
           update: (cache, { data: { addPost } }) => {
             type cacheReadQuery = any;
-            //   console.log(data);
             // first read the query you want to update
             const dataPosts: cacheReadQuery = cache.readQuery({ query: gqlGetPost });
             // crete updated data
-            console.log(dataPosts);
             dataPosts.getPosts.unshift(addPost);
             // write updated data baack to query
             cache.writeQuery({
@@ -105,19 +108,112 @@ export const actions: PostsActionTree = {
               ...payload,
             },
           },
+          // Rerun specific queries after performing the mutatuon in order to get fresh data
+          refetchQueries: [
+            {
+              query: gqlInfiniteScrollPosts,
+              variables: {
+                // TODO: pasar valores a constantes para centralizar
+                pageNum: 1,
+                pageSize: 2,
+              },
+            },
+          ],
         });
 
         if (!errors) {
-          console.log(data);
           // @ts-ignore
           resolve(data);
         }
       } catch (error) {
-        console.error('entra');
         reject(error);
       } finally {
         context.dispatch('ACT_LOADING_POST', false);
         context.commit('stopProcessing', null, { root: true });
+      }
+    });
+  },
+  ACT_USER_POSTS(context: PostsActionContext, payload: string): Promise<Post[] | []> {
+    return new Promise((resolve, reject) => {
+      try {
+        context.commit('startProcessing', null, { root: true });
+        const variables = { userId: payload };
+        apolloClient.query({
+          query: gqlGetUserPost,
+          variables,
+        }).then(({ data }) => {
+          context.commit('SET_USER_POST', data.getUserPosts);
+          resolve(data.getUserPosts);
+        }).catch((error) => {
+          Vue.prototype.$log.error(error);
+          // set error
+          reject(error);
+        });
+      } catch (error) {
+        // set error
+        reject(error);
+      } finally {
+        context.commit('stopProcessing', null, { root: true });
+      }
+    });
+  },
+  ACT_UPDATE_USER_POST(context: PostsActionContext, payload: Partial<MyPost>): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      try {
+        context.commit('startProcessing', null, { root: true });
+        apolloClient.mutate({
+          mutation: gqlUpdateUserPost,
+          variables: payload,
+        })
+          .then(({ data }) => {
+            // buscamos el indice del objeto post actualizado
+            const index = context.state.userPost.findIndex(
+              // eslint-disable-next-line no-underscore-dangle
+              (post) => post._id === data.updateUserPost._id,
+            );
+            const userPosts = [
+              ...context.state.userPost.slice(0, index),
+              data.updateUserPost,
+              ...context.state.userPost.slice(index + 1),
+            ];
+            context.commit('SET_USER_POST', userPosts);
+            resolve(true);
+          })
+          .catch((error) => Vue.prototype.$log.error(error));
+      } catch (error) {
+        reject(error);
+      } finally {
+        context.commit('stopProcessing', null, { root: true });
+      }
+    });
+  },
+  ACT_DELETE_USER_POST(context: PostsActionContext, payload: string): Promise<Post> {
+    return new Promise<Post>(async (resolve, reject) => {
+      try {
+        const variables = { postId: payload };
+        // TODO Poner loading
+        await apolloClient.mutate({
+          mutation: gqlDeleteUserPost,
+          variables,
+        }).then(({ data }) => {
+          // buscamos el indice del objeto post actualizado
+          const index = context.state.userPost.findIndex(
+            // eslint-disable-next-line no-underscore-dangle
+            (post) => post._id === data.deleteUserPost._id,
+          );
+          const userPosts = [
+            ...context.state.userPost.slice(0, index),
+            ...context.state.userPost.slice(index + 1),
+          ];
+          context.commit('SET_USER_POST', userPosts);
+          resolve(data.deleteUserPost);
+        })
+          .catch((error) => reject(error));
+      } catch (error) {
+        // TODO: Setear el error
+        reject(error);
+      } finally {
+        // TODO Quitar loading
       }
     });
   },

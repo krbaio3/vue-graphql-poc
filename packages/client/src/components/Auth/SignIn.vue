@@ -108,7 +108,7 @@ export default class SignIn extends Vue {
       if ((this.$refs.form as Vue & { validate: () => boolean }).validate()) {
         this.actSignInUser({ username: this.username, password: this.password }).then(() => {
           router.push({ path: '/' });
-        }).catch((error) => console.error(error));
+        }).catch((error) => this.$log.error(error));
       }
     }
 }

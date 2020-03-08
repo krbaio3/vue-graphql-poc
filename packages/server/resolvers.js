@@ -38,6 +38,13 @@ module.exports = {
       });
       return post;
     },
+    getUserPosts: async (_, { userId }, { Post }) => {
+      const post = await Post.find({
+        createdBy: userId
+      });
+
+      return post;
+    },
     getAllUser: async (_, args, { User }) => {
       const user = await User.find({});
       return user;
@@ -101,6 +108,25 @@ module.exports = {
         createdBy: creatorID,
       }).save();
       return newPost;
+    },
+    updateUserPost: async (_, {postId, userId, title, imageUrl, categories, description}, {Post})=> {
+
+        const post = await Post.findOneAndUpdate(
+          // Find post by postId and createdBy
+          { _id: postId,
+            createdBy: userId
+          },
+         // Update by fields
+         { $set: { title, imageUrl, categories, description }},
+         // return
+         { new: true}
+        );
+
+        return post;
+    },
+    deleteUserPost: async(_,{ postId}, {Post}) => {
+      const post = await Post.findOneAndRemove({ _id: postId});
+      return post;
     },
     addPostMessage: async (_, {messageBody, user, postId}, {Post})=> {
       

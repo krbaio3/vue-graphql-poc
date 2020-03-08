@@ -1,5 +1,5 @@
 {
-  "dependencies": {
+    "dependencies": {
     "apollo-boost": "^0.4.7",
     "axios": "^0.19.1",
     "core-js": "^3.6.4",
@@ -11,12 +11,13 @@
     "vue-property-decorator": "^8.3.0",
     "vue-router": "^3.1.5",
     "vue-rx": "^6.2.0",
+    "vuejs-logger": "1.5.0",
     "vuetify": "^2.2.12",
     "vuex": "^3.1.2",
     "vuex-class": "^0.3.2",
     "vuex-persist": "^2.2.0"
-  },
-  "devDependencies": {
+ },
+ "devDependencies": {
     "@mdi/font": "^4.7.95",
     "@mdi/js": "^4.7.95",
     "@types/graphql": "^14.5.0",
@@ -36,6 +37,7 @@
     "@vue/test-utils": "1.0.0-beta.30",
     "apollo-client": "^2.6.8",
     "apollo-link": "^1.2.13",
+    "es6-object-assign": "^1.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",
     "eslint-import-resolver-webpack": "^0.12.1",
@@ -52,23 +54,23 @@
     "vue-template-compiler": "^2.6.11",
     "vuetify-loader": "^1.4.3",
     "webpack": "^4.41.5"
-  },
-  "gitHooks": {
+ },
+ "gitHooks": {
     "pre-commit": "lint-staged"
-  },
-  "lint-staged": {
+ },
+ "lint-staged": {
     "*.{js,jsx,vue,ts,tsx}": [
-      "vue-cli-service lint",
-      "git add"
+    "vue-cli-service lint",
+    "git add"
     ]
-  },
-  "name": "@vue-graphql/client",
-  "private": true,
-  "scripts": {
+ },
+ "name": "@vue-graphql/client",
+ "private": true,
+ "scripts": {
     "serve": "vue-cli-service serve --mode development",
     "build": "vue-cli-service build --mode production",
     "test:unit": "vue-cli-service test:unit",
     "lint": "vue-cli-service lint"
-  },
-  "version": "0.1.0"
+ },
+ "version": "0.1.0"
 }

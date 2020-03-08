@@ -154,11 +154,6 @@ export default class AddPostComponent extends Vue {
 
   // ////////
 
-  // private updated() {
-  //   debugger
-  //   this.image === '' ? this.imageUrl = '/no_img.jpg' : this.imageUrl = this.image;
-  // }
-
   private handleAddPost(): void {
     const addPost: AddPost = {
       categories: this.categories,
@@ -170,8 +165,6 @@ export default class AddPostComponent extends Vue {
     };
 
     if (this.form.validate()) {
-      console.log(addPost);
-
       this.addPost(addPost).then(() => {
         this.$router.push({ path: '/' });
       });

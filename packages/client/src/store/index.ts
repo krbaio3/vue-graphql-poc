@@ -57,7 +57,6 @@ const rootStore: StoreOptions<RootState> = {
       }, 5000);
     },
     setCurrentUser(state: RootState, payload: User) {
-      console.log(payload);
       state.user = payload;
     },
   },
@@ -69,10 +68,9 @@ const rootStore: StoreOptions<RootState> = {
       }).then(({ data }) => {
         commit('setCurrentUser', data.getCurrentUser);
         // Hacer el redirect aqui o en el componente
-        console.log(data.getCurrentUser);
       })
         .catch((error) => {
-          console.error(error);
+          Vue.prototype.$log.error(error);
         })
         .finally(() => {
           commit('stopProcessing');
