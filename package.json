@@ -2,49 +2,57 @@
   "name": "vue-graphql",
   "version": "0.1.0",
   "private": true,
+  "description": "POC vueJS with graphQL",
+  "keywords": [
+    "vue",
+    "graphql"
+  ],
+  "homepage": "https://github.com/krbaio3/vue-graphql-poc#readme",
+  "bugs": {
+    "url": "https://github.com/krbaio3/vue-graphql-poc/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/krbaio3/vue-graphql-poc.git"
+  },
+  "license": "MIT",
+  "author": "J. KrBaIO3 <krbaio3@gmail.com>",
+  "main": "main.js",
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "serve": "vue-cli-service serve",
-    "build": "vue-cli-service build",
-    "test:unit": "vue-cli-service test:unit",
-    "lint": "vue-cli-service lint"
+    "client": "yarn workspace @vue-graphql/client serve",
+    "client:lint": "yarn workspace @vue-graphql/client lint --fix",
+    "server": "yarn workspace @vue-graphql/server server",
+    "dev": "concurrently --kill-others-on-fail --names \"SERVER,CLIENT\" -c \"black.bgCyan.bold,yellow.bgRed.bold\" \"yarn server\"  \"yarn client\"",
+    "test": "test"
   },
   "dependencies": {
-    "core-js": "^3.6.4",
-    "vue": "^2.6.11",
-    "vue-class-component": "^7.2.2",
-    "vue-property-decorator": "^8.3.0",
-    "vue-router": "^3.1.5",
-    "vuex": "^3.1.2"
+    "concurrently": "^5.0.2",
+    "graphql": "^14.5.8"
   },
   "devDependencies": {
-    "@types/jest": "^24.0.19",
-    "@typescript-eslint/eslint-plugin": "^2.18.0",
-    "@typescript-eslint/parser": "^2.18.0",
-    "@vue/cli-plugin-babel": "~4.2.0",
-    "@vue/cli-plugin-eslint": "~4.2.0",
-    "@vue/cli-plugin-router": "~4.2.0",
-    "@vue/cli-plugin-typescript": "~4.2.0",
-    "@vue/cli-plugin-unit-jest": "~4.2.0",
-    "@vue/cli-plugin-vuex": "~4.2.0",
-    "@vue/cli-service": "~4.2.0",
     "@vue/eslint-config-airbnb": "^5.0.2",
     "@vue/eslint-config-typescript": "^5.0.1",
-    "@vue/test-utils": "1.0.0-beta.31",
-    "eslint": "^6.7.2",
+    "eslint": "^6.8.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-import": "^2.20.1",
+    "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-vue": "^6.1.2",
-    "lint-staged": "^9.5.0",
-    "node-sass": "^4.12.0",
-    "sass-loader": "^8.0.2",
-    "typescript": "~3.7.5",
-    "vue-template-compiler": "^2.6.11"
+    "prettier": "^1.19.1"
+  },
+  "engines": {
+    "node": ">=8.10.0",
+    "yarn": "1.x"
   },
   "gitHooks": {
     "pre-commit": "lint-staged"
   },
   "lint-staged": {
-    "*.{js,jsx,vue,ts,tsx}": [
-      "vue-cli-service lint",
+    "*.{vue,ts}": [
+      "yarn client:lint",
       "git add"
     ]
   }

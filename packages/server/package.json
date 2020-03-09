@@ -1,0 +1,39 @@
+{
+  "name": "@vue-graphql/server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "POC vueJS with graphQL. Server",
+  "keywords": [
+    "vuejs",
+    "graphql",
+    "server"
+  ],
+  "homepage": "https://github.com/krbaio3/vue-graphql-poc#readme",
+  "bugs": {
+    "url": "https://github.com/krbaio3/vue-graphql-poc/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/krbaio3/vue-graphql-poc.git"
+  },
+  "license": "MIT",
+  "author": "J. KrBaIO3 <krbaio3@gmail.com>",
+  "main": "server.js",
+  "scripts": {
+    "server": "nodemon server.js",
+    "start": "node server.js",
+    "test": "test"
+  },
+  "dependencies": {
+    "apollo-server": "^2.9.16",
+    "bcrypt": "^3.0.7",
+    "dotenv": "^8.2.0",
+    "jsonwebtoken": "^8.5.1",
+    "md5": "^2.2.1",
+    "mongoose": "^5.8.7"
+  },
+  "devDependencies": {
+    "concurrently": "^5.0.2",
+    "nodemon": "^2.0.2"
+  }
+}

@@ -1,0 +1,12 @@
+mutation($messageBody: String!, $userId: ID!, $postID: ID!) {
+  addPostMessage(messageBody: $messageBody, user: $userId, postId: $postID) {
+    _id
+    messageBody
+    messageDate
+    messageUser {
+      _id
+      username
+      avatar
+    }
+  }
+}
